@@ -1,0 +1,16 @@
+{
+  "name": "helpers",
+  "version": "1.0.0",
+  "description": "Helper functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "tsc -p . && mocha",
+    "prepublish": "tsc -p .",
+    "dev-test-watch": "mocha-typescript-watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha-typescript": "^1.0.23"
+  }
+}
