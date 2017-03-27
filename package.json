@@ -8,7 +8,7 @@
     "typescript": "2.2.1"
   },
   "scripts": {
-    "install": "tsc -p .",
+    "build": "tsc -p .",
     "test": "tsc -p . && mocha test --recursive",
     "dev-test-watch": "mocha-typescript-watch",
     "prepublish": "tsc -p ."
