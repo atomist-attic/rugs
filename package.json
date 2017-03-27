@@ -1,5 +1,5 @@
 {
-  "name": "rug-utils",
+  "name": "@atomist/rug-utils",
   "version": "0.0.1",
   "description": "Helper functions for Rugs",
   "main": "index.js",
@@ -12,8 +12,20 @@
     "dev-test-watch": "mocha-typescript-watch",
     "prepublish": "tsc -p ."
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atomist/rug-utils.git"
+  },
+  "keywords": [
+    "Atomist",
+    "Rug"
+  ],
+  "author": "Atomist, Inc",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/atomist/rug-utils/issues"
+  },
+  "homepage": "https://github.com/atomist/rug-utils#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",

@@ -26,6 +26,7 @@ function main() {
         err "failed to set version in $package"
         return 1
     fi
+    cp "$tmp_package" "$package"
     if [[ $NPM_TOKEN ]]; then
         msg "Creating local .npmrc using API key from environment"
         if ! ( umask 077 && echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc" ); then
