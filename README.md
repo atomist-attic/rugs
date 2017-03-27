@@ -1,4 +1,4 @@
-# rug-utils
+# rugs
 
 [![Build Status](https://travis-ci.org/atomist/rug-utils.svg?branch=master)](https://travis-ci.org/atomist/rug-utils)
 
