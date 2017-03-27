@@ -22,7 +22,7 @@ function main() {
 
     local package="package.json"
     local tmp_package="$package.tmp"
-    if ! jq --arg tag "$TRAVIS_TAG" '.version = "$tag"' "$package" > "$tmp_package"; then
+    if ! jq --arg tag "$TRAVIS_TAG" '.version = $tag' "$package" > "$tmp_package"; then
         err "failed to set version in $package"
         return 1
     fi
