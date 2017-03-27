@@ -1,5 +1,12 @@
 language: node_js
 node_js:
-    - "7"
+- '7'
 after_deploy:
 - bash npm-publish.bash $TRAVIS_TAG rug-utils
+deploy:
+  provider: releases
+  api_key:
+    secure: E0PfPJ6MlbR6YsVsg4zi0XGxv4sgOk9IZgEcRK6cdl/BETRKCqjpB3ZrJhR4khB43sbw4ojKt3kmjDN5LOANza1xe5mJkdYyiodcaivAIMk51YRgdVcKr78cKvJegIZoBQb6jsKw4PDdnECsdpOGaAOWD0zdVbcNx7AofE8NqApOA00Y+IDEtE8Hvl/kEqgrFpO0rGvCLMTWCpKbsycDzHrt/0lpuOSvRz6NahS90ypz2udrF/zPwMZ3SdMMUosOD0yaWZgA7VXVWHfTyVdBkHFYswwtlWjsoK0XjoP+DIIuSCPGE0+OIVESSCyTw7rmuyMsnfCSxsvdkLLiPn0uEmhDKx2VvtqKLM2c4mblMIyCEf4t1nIOItqWlJiAS01VvYWdMQpkbXbJflpptMsPdbkcuJnrHgwlo8I6+hZ0Q3psewB4UBaGn55K0yXuvCtabq5aaMt5v5jwzEK5ZYUgtRNfdsO4jNeRPrSPoSyMKH/fBS7lH8X5w+eYplaMNuguHs+2EWopxIxCrV81Zn7DZ92JZshxRYxZHYgmULPOCtFqRREna5XzGYoH20iR4HSzpqnLbmXQCvi03tgci9MDc6zX4ONU1k9o84qg6r1xSwCRPIptvTpqum20rpAtjdsh1jtjSMwZcOfvrswmX21bQOme7HjR7sjM8sv9n5sbfgg=
+  on:
+    tags: true
+    condition: "$TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$"

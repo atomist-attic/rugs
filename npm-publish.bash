@@ -28,11 +28,13 @@ function publish() {
 
     local target="target/.atomist/node_modules/@atomist/${module_name}}"
     local package="$target/package.json"
-    if ! sed "/version/s/REPLACE_ME/$module_version/" "$package.in" > "$package"; then
+    local tmp_package="$package.tmp"
+    if ! jq --arg tag "$TRAVIS_TAG" '.version = "$tag"' "$package" > "$tmp_package"; then
         err "failed to set version in $package"
         return 1
     fi
-    rm -f "$package.in"
+
+    cp "$tmp_package" "$package"
 
     if [[ $NPM_TOKEN ]]; then
         msg "Creating local .npmrc using API key from environment"
