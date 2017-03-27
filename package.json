@@ -1,5 +1,5 @@
 {
-  "name": "@atomist/rug-utils",
+  "name": "@atomist/rugs",
   "version": "0.0.1",
   "description": "Helper functions for Rugs",
   "main": "index.js",
