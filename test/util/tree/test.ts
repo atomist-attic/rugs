@@ -1,19 +1,14 @@
-
-
 import { suite, test, slow, timeout, skip, only } from "mocha-typescript";
 
 import {expect} from "chai"
 
-import {hello} from "../util/First"
+import {hello} from "../../../util/First"
 
 import {PathExpression} from "@atomist/rug/tree/PathExpression"
 
-@suite class Hello {
-    @test "world"() {
-      console.log(hello("Rod"))
-    }
+@suite class QueryByExample {
 
-    @test "path expression"() {
+    @test "path expression should contain string"() {
       let myString = "my/path"
       let pe = new PathExpression(myString)
       console.log(pe)

@@ -8,7 +8,7 @@
     "typescript": "2.2.1"
   },
   "scripts": {
-    "test": "tsc -p . && mocha",
+    "test": "tsc -p . && mocha test/**/*.js",
     "dev-test-watch": "mocha-typescript-watch",
     "prepublish": "tsc -p ."
   },
