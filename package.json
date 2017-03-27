@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Helper functions",
   "main": "index.js",
+  "dependencies": {
+        "@atomist/rug":
+        "file:/Users/rodjohnson/sforzando-dev/idea-projects/rug/target/.atomist/node_modules/@atomist/rug"
+    },
   "scripts": {
     "test": "tsc -p . && mocha",
     "prepublish": "tsc -p .",
