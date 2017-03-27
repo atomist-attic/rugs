@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - '7'
 after_deploy:
-- bash npm-publish.bash $TRAVIS_TAG rug-utils
+- bash npm-publish.bash $TRAVIS_TAG rugs
 deploy:
   provider: releases
   api_key:
