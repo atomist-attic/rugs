@@ -14,9 +14,8 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true
-      },
+    },
     "exclude": [
-      "node_modules"
     ],
     "compileOnSave": true,
     "buildOnSave": false,
