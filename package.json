@@ -1,6 +1,6 @@
 {
   "name": "rug-utils",
-  "version": "1.0.0",
+  "version": "REPLACE_ME",
   "description": "Helper functions for Rugs",
   "main": "index.js",
   "dependencies": {
