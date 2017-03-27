@@ -4,11 +4,11 @@
   "description": "Helper functions for Rugs",
   "main": "index.js",
   "dependencies": {
-    "@atomist/rug": "0.17.3",
+    "@atomist/cortex": "0.18.2",
     "typescript": "2.2.1"
   },
   "scripts": {
-    "test": "tsc -p . && mocha test/**/*.js",
+    "test": "tsc -p . && mocha test --recursive",
     "dev-test-watch": "mocha-typescript-watch",
     "prepublish": "tsc -p ."
   },
