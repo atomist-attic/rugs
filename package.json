@@ -4,9 +4,9 @@
   "description": "Helper functions for Rugs",
   "main": "index.js",
   "dependencies": {
-        "@atomist/rug": "0.17.3",
-         "typescript": "2.2.1"
-    },
+    "@atomist/rug": "0.17.3",
+    "typescript": "2.2.1"
+  },
   "scripts": {
     "test": "tsc -p . && mocha",
     "dev-test-watch": "mocha-typescript-watch",
@@ -15,7 +15,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "mocha-typescript": "^1.0.23",
-    "mocha": "3.2.0"
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "mocha-typescript": "^1.0.23"
   }
 }
