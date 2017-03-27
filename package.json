@@ -1,20 +1,21 @@
 {
-  "name": "helpers",
+  "name": "rug-tuils",
   "version": "1.0.0",
-  "description": "Helper functions",
+  "description": "Helper functions for Rugs",
   "main": "index.js",
   "dependencies": {
-        "@atomist/rug":
-        "file:/Users/rodjohnson/sforzando-dev/idea-projects/rug/target/.atomist/node_modules/@atomist/rug"
+        "@atomist/rug": "0.17.3",
+         "typescript": "2.2.1"
     },
   "scripts": {
     "test": "tsc -p . && mocha",
-    "prepublish": "tsc -p .",
-    "dev-test-watch": "mocha-typescript-watch"
+    "dev-test-watch": "mocha-typescript-watch",
+    "prepublish": "tsc -p ."
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "mocha-typescript": "^1.0.23"
+    "mocha-typescript": "^1.0.23",
+    "mocha": "3.2.0"
   }
 }
