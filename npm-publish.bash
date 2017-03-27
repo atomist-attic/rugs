@@ -13,29 +13,19 @@ function err() {
     msg "$*" 1>&2
 }
 
-function publish() {
+function main() {
     local module_version=$1
-    local mmodule_name=$2
     if [[ ! $module_version ]]; then
         err "first parameter must be the version number of the module to publish"
         return 10
     fi
 
-    if [[ ! $module_name ]]; then
-        err "second parameter must be the name of the module to publish"
-        return 10
-    fi
-
-    local target="target/.atomist/node_modules/@atomist/${module_name}}"
-    local package="$target/package.json"
+    local package="package.json"
     local tmp_package="$package.tmp"
     if ! jq --arg tag "$TRAVIS_TAG" '.version = "$tag"' "$package" > "$tmp_package"; then
         err "failed to set version in $package"
         return 1
     fi
-
-    cp "$tmp_package" "$package"
-
     if [[ $NPM_TOKEN ]]; then
         msg "Creating local .npmrc using API key from environment"
         if ! ( umask 077 && echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc" ); then
@@ -56,5 +46,5 @@ function publish() {
     fi
 }
 
-publish "$@" || exit 1
+main "$@" || exit 1
 exit 0
