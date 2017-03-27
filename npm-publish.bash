@@ -56,5 +56,5 @@ function publish() {
     fi
 }
 
-main "$@" || exit 1
+publish "$@" || exit 1
 exit 0
