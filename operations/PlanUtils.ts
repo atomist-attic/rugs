@@ -1,6 +1,6 @@
 import {ProjectEditor, EditProject} from "@atomist/rug/operations/ProjectEditor"
 import {Project} from "@atomist/rug/model/Project"
-import {Edit,Instruction,HandleCommand} from "@atomist/rug/operations/Handlers"
+import {Edit,Instruction,HandleCommand, Respondable, Execute} from "@atomist/rug/operations/Handlers"
 
 /**
  * Build a plan instruction for the given decorated
@@ -35,4 +35,12 @@ function instruction(op, kind) {
         name: op.__name,
         parameters: params,
     }
+}
+/**
+ * Build an 'execute' Rug Function
+ * @param name Rug Function to call
+ * @param params any params, if any
+ */
+export function execute(name: string, params?: any) : Respondable<Execute> {
+    return {instruction: {kind: "execute", name: name, parameters: params}}
 }
