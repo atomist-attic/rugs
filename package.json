@@ -1,6 +1,6 @@
 {
   "name": "@atomist/rugs",
-  "version": "0.0.1",
+  "version": "0.0.9",
   "description": "Helper functions for Rugs",
   "main": "index.js",
   "dependencies": {
@@ -8,7 +8,6 @@
     "typescript": "2.2.1"
   },
   "scripts": {
-    "build": "tsc -p .",
     "test": "tsc -p . && mocha test --recursive",
     "dev-test-watch": "mocha-typescript-watch",
     "prepublish": "tsc -p ."
