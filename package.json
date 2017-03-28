@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "@atomist/cortex": "0.18.2",
-    "typescript": "2.2.1"
+    "typescript": "2.2.1",
+    "mustache": "^2.3.0"
   },
   "scripts": {
     "build": "tsc -p .",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "mocha-typescript": "^1.0.23"
+    "mocha-typescript": "^1.0.23",
+    "@types/mustache": "^0.8.29"
   }
 }
