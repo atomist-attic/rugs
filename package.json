@@ -2,10 +2,8 @@
   "name": "@atomist/rugs",
   "version": "0.0.9",
   "description": "Helper functions for Rugs",
-  "main": "index.js",
   "dependencies": {
     "@atomist/cortex": "0.18.2",
-    "typescript": "2.2.1",
     "mustache": "^2.3.0"
   },
   "scripts": {
@@ -15,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atomist/rug-utils.git"
+    "url": "git+https://github.com/atomist/rugs.git"
   },
   "keywords": [
     "Atomist",
@@ -24,12 +22,13 @@
   "author": "Atomist, Inc",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/atomist/rug-utils/issues"
+    "url": "https://github.com/atomist/rugs/issues"
   },
-  "homepage": "https://github.com/atomist/rug-utils#readme",
+  "homepage": "https://github.com/atomist/rugs#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
+    "typescript": "2.2.1",
     "mocha-typescript": "^1.0.23",
     "@types/mustache": "^0.8.29"
   }
