@@ -19,7 +19,6 @@ class GenericErrorHandler implements HandleResponse<any> {
     }
 }
 
-export let errorHandler = new GenericErrorHandler()
 export function handleErrors(res: Respondable<any>, params?: any) : Respondable<any> {
     res.onError =  {kind: "respond", name: "GenericErrorHandler", parameters: params}
     return res
@@ -43,10 +42,10 @@ export function handleSuccess(res: Respondable<any>, msg: String) : Respondable<
     return res
 }
 
-export let successHandler = new GenericSuccessHandler()
-
 //wrap with error and/or success handlers
 export function wrap(res: Respondable<any>,  success: string, params?: any) : Respondable<any> {
     let withErrors = handleErrors(res, params);
     return handleSuccess(withErrors, success)
 }
+
+export {GenericErrorHandler, GenericSuccessHandler}
