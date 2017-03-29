@@ -48,8 +48,12 @@ class Branch {
  * return the branch NOT as a predicate.
  */
 function queryByExampleString(g: any): Branch {
-    let pe = typeToAddress(g)
-    let isMatch: boolean = g._match && g._match == true
+    let rootExpression = typeToAddress(g)
+    let isMatch: boolean = g._match && g._match
+    // We want to put these first, as it makes for more readable path expression
+    // and makes tests deterministic
+    let simplePredicates = ""
+    let complexPredicates = ""
 
     for (let id in g) {
         let propOrFun = g[id]
@@ -69,18 +73,20 @@ function queryByExampleString(g: any): Branch {
             if (branch.match) 
                 isMatch = true
             let step = `/${id}::${branch.path}`
-            pe += branch.match ? step : `[${step}]`
+            complexPredicates += branch.match ? step : `[${step}]`
         }
         else if (["string", "number", "boolean"].indexOf(typeof value) != -1) {
             // It's probably a simple property
             //console.log(`Non graph node result of invoking ${id} was [${value}]`)
-            pe += `[@${id}='${value}']`
+            simplePredicates += `[@${id}='${value}']`
         }
         else {
             //console.log(`Don't know what to do with unfamiliar result of invoking ${id} was [${value}]`)
         }
     }
-    return new Branch(pe, isMatch)
+    return new Branch(
+        rootExpression + simplePredicates + complexPredicates, 
+        isMatch)
 }
 
 function typeToAddress(g: any): string {

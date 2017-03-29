@@ -26,7 +26,7 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
     @test "node with two simple property predicates"() {
       let b = new Build().withType("mybuild").withStatus("failed")
       let pathExpression = query.byExample(b)
-      expect(pathExpression.expression).to.equal(`/Build()[@type='${b.type()}'][@status='${b.status()}']`)
+      expect(pathExpression.expression).to.equal(`/Build()[@status='${b.status()}'][@type='${b.type()}']`)
     }
 
     @test "node with related node"() {
