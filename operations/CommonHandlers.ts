@@ -1,4 +1,4 @@
-import {HandleResponse, Response, HandlerContext, Respondable, Message} from '@atomist/rug/operations/Handlers'
+import {HandleResponse, Response, HandlerContext, Respondable, Message, Plan} from '@atomist/rug/operations/Handlers'
 import {ResponseHandler, Parameter, Tags} from '@atomist/rug/operations/Decorators'
 import {renderError, renderSuccess} from './messages/MessageRendering'
 
@@ -12,10 +12,10 @@ class GenericErrorHandler implements HandleResponse<any> {
     @Parameter({description: "Correlation ID", pattern: "@any", required: false})
     corrid: string
 
-    handle(response: Response<any>): Message {
+    handle(response: Response<any>): Plan {
         let body = response.body() != null ? "(" + response.body() + ")": ""
         let msg = this.msg == undefined ? "" : this.msg
-        return new Message(renderError(`${msg}${response.msg()}${body}`, this.corrid));
+        return new Plan().add(new Message(renderError(`${msg}${response.msg()}${body}`, this.corrid)));
     }
 }
 
@@ -31,9 +31,9 @@ class GenericSuccessHandler implements HandleResponse<any> {
     @Parameter({description: "Success msg", pattern: "@any"})
     msg: string
 
-    handle(response: Response<any>): Message {
+    handle(response: Response<any>): Plan {
         //TODO - render the body?
-        return new Message(renderSuccess(`${this.msg}`));
+        return new Plan().add(new Message(renderSuccess(`${this.msg}`)));
     }
 }
 
