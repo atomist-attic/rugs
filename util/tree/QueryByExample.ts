@@ -21,7 +21,7 @@ export function match(a) {
  */
 export function byExample<R extends GraphNode, L extends GraphNode>(g: any): PathExpression<R, L> {
     let pathExpression = `/${queryByExampleString(g).path}`
-    //console.log(`Created path expression [${pathExpression}]`)
+    console.log(`Created path expression [${pathExpression}]`)
     return new PathExpression<R, L>(pathExpression)
 }
 
@@ -118,7 +118,7 @@ function handleAny(root: any, state: PathBuilderState, id: string, value) {
         handlePrimitive(state, id, value)
     }
     else {
-        console.log(`Don't know what to do with unfamiliar result of invoking ${id} was [${value}]`)
+        console.log(`Don't know what to do with unfamiliar result of invoking [${id}] was [${value}]`)
     }
 }
 
