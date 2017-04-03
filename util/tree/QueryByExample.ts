@@ -1,4 +1,4 @@
-import {GraphNode,PathExpression} from "@atomist/rug/tree/PathExpression"
+import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression"
 
 /**
  * Mark this object as a match that will be
@@ -19,10 +19,10 @@ export function match(a) {
  * @type R type of root
  * @type L type of leaf (may be the same)
  */
-export function byExample<R extends GraphNode, L extends GraphNode>(g: any): PathExpression<R,L> {
+export function byExample<R extends GraphNode, L extends GraphNode>(g: any): PathExpression<R, L> {
     let pathExpression = `/${queryByExampleString(g).path}`
     //console.log(`Created path expression [${pathExpression}]`)
-    return new PathExpression<R,L>(pathExpression)
+    return new PathExpression<R, L>(pathExpression)
 }
 
 /**
@@ -31,8 +31,8 @@ export function byExample<R extends GraphNode, L extends GraphNode>(g: any): Pat
  * Should be passed to scala-style queries.
  * @param g root node
  */
-export function forRoot<R extends GraphNode>(g: any): PathExpression<R,R> {
-    return byExample<R,R>(g)
+export function forRoot<R extends GraphNode>(g: any): PathExpression<R, R> {
+    return byExample<R, R>(g)
 }
 
 /**
@@ -40,7 +40,42 @@ export function forRoot<R extends GraphNode>(g: any): PathExpression<R,R> {
  * or as a predicate.
  */
 class Branch {
-    constructor(public path: string, public match: boolean) {}
+    constructor(public path: string, public match: boolean) { }
+}
+
+// Internal state of query string generation
+class PathBuilderState {
+
+    private isMatch: boolean
+    private simplePredicates = ""
+    private complexPredicates = ""
+    private rootExpression: string
+
+    constructor(g: any) {
+        this.isMatch = g._match && g._match
+        this.rootExpression = typeToAddress(g)
+    }
+
+    addSimplePredicate(pred: string) {
+        this.simplePredicates += pred
+    }
+
+    addComplexPredicate(pred: string) {
+        this.complexPredicates += pred
+    }
+
+    match() {
+        this.isMatch = true
+    }
+
+    /**
+     * The branch built from the state we've built up
+     */
+    branch() {
+        return new Branch(
+            this.rootExpression + this.simplePredicates + this.complexPredicates,
+            this.isMatch)
+    }
 }
 
 /**
@@ -48,12 +83,7 @@ class Branch {
  * return the branch NOT as a predicate.
  */
 function queryByExampleString(g: any): Branch {
-    let rootExpression = typeToAddress(g)
-    let isMatch: boolean = g._match && g._match
-    // We want to put these first, as it makes for more readable path expression
-    // and makes tests deterministic
-    let simplePredicates = ""
-    let complexPredicates = ""
+    let state = new PathBuilderState(g)
 
     for (let id in g) {
         let propOrFun = g[id]
@@ -64,29 +94,52 @@ function queryByExampleString(g: any): Branch {
         else if (isRelevantProperty(id, propOrFun)) {
             value = g[id]
         }
-        if (!value) {
-            // Ignore
-        }
-        else if (value.nodeTags && value.nodeName) { // Simple test for graph node type
-            //console.log(`GraphNode Target=${target}`)
-            let branch = queryByExampleString(value)
-            if (branch.match) 
-                isMatch = true
-            let step = `/${id}::${branch.path}`
-            complexPredicates += branch.match ? step : `[${step}]`
-        }
-        else if (["string", "number", "boolean"].indexOf(typeof value) != -1) {
-            // It's probably a simple property
-            //console.log(`Non graph node result of invoking ${id} was [${value}]`)
-            simplePredicates += `[@${id}='${value}']`
-        }
-        else {
-            //console.log(`Don't know what to do with unfamiliar result of invoking ${id} was [${value}]`)
-        }
+        // Ignore undefined values
+        if (value)
+            handleAny(g, state, id, value)
     }
-    return new Branch(
-        rootExpression + simplePredicates + complexPredicates, 
-        isMatch)
+    return state.branch()
+}
+
+function handleAny(root: any, state: PathBuilderState, id: string, value) {
+    if (value == null) {
+        throw new Error("What to do with explicit null?")
+    }
+    else if (value === root) {
+        throw new Error(`Cycle detected processing property [${id}] returning ${JSON.stringify(value)} with state ${state}`)
+    }
+    else if (isArray(value)) {
+        handleArray(state, id, value)
+    }
+    else if (isGraphNode(value)) {
+        handleGraphNode(state, id, value)
+    }
+    else if (isPrimitive(value) != -1) {
+        handlePrimitive(state, id, value)
+    }
+    else {
+        console.log(`Don't know what to do with unfamiliar result of invoking ${id} was [${value}]`)
+    }
+}
+
+function handlePrimitive(state: PathBuilderState, id: string, value) {
+    //console.log(`Non graph node result of invoking ${id} was [${value}]`)
+    state.addSimplePredicate(`[@${id}='${value}']`)
+}
+
+function handleArray(state: PathBuilderState, id: string, values: any[]) {
+    values.forEach(v => {
+        handleAny(values, state, id, v)
+    })
+}
+
+function handleGraphNode(state: PathBuilderState, id: string, value: GraphNode) {
+    let branch = queryByExampleString(value)
+    if (branch.match) {
+        state.match()
+    }
+    let step = `/${id}::${branch.path}`
+    state.addComplexPredicate(branch.match ? step : `[${step}]`)
 }
 
 function typeToAddress(g: any): string {
@@ -94,13 +147,23 @@ function typeToAddress(g: any): string {
     return isFunction(g.nodeTags) ? `${g.nodeTags()[0]}()` : `${g.nodeTags[0]}()`
 }
 
+function isGraphNode(obj) {
+    // Simple test for whether an object is a GraphNode
+    return obj.nodeTags && obj.nodeName
+}
+
+function isPrimitive(obj) {
+    return ["string", "number", "boolean"].indexOf(typeof obj)
+}
+
 /**
  * Is this a function we care about? That is, it's not one of our well-known functions
- * and isn't a builder function whose name starts with "with"
+ * and isn't a builder function whose name starts with "with" or "add"
  */
 function isRelevantFunction(id: string, f): boolean {
     return isFunction(f) && ["nodeTags", "nodeName", "address", "constructor", "navigatedFrom"].indexOf(id) == -1 &&
-        id.indexOf("with") != 0
+        id.indexOf("with") != 0 &&
+        id.indexOf("add") != 0
 }
 
 /**
@@ -113,5 +176,9 @@ function isRelevantProperty(id: string, p): boolean {
 }
 
 function isFunction(obj) {
-  return !!(obj && obj.constructor && obj.call && obj.apply);
-};
+    return !!(obj && obj.constructor && obj.call && obj.apply);
+}
+
+function isArray(obj) {
+    return obj.constructor === Array
+}
