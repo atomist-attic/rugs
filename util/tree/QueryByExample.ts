@@ -21,7 +21,7 @@ export function match(a) {
  */
 export function byExample<R extends GraphNode, L extends GraphNode>(g: any): PathExpression<R, L> {
     let pathExpression = `/${queryByExampleString(g).path}`
-    console.log(`Created path expression [${pathExpression}]`)
+    console.log(`Created path expression [${pathExpression}] for ${JSON.stringify(g)}`)
     return new PathExpression<R, L>(pathExpression)
 }
 
@@ -64,12 +64,16 @@ class PathBuilderState {
         this.complexPredicates += pred
     }
 
-    match() {
+    /**
+     * Mark this branch as a match branch, not a predicate?
+     */
+    markAsMatch() {
         this.isMatch = true
     }
 
     /**
-     * The branch built from the state we've built up
+     * The branch built from the state we've built up.
+     * This is the ultimate objective.
      */
     branch() {
         return new Branch(
@@ -118,7 +122,7 @@ function handleAny(root: any, state: PathBuilderState, id: string, value) {
         handlePrimitive(state, id, value)
     }
     else {
-        console.log(`Don't know what to do with unfamiliar result of invoking [${id}] was [${value}]`)
+        //console.log(`Don't know what to do with unfamiliar result of invoking [${id}] was [${value}]`)
     }
 }
 
@@ -136,7 +140,7 @@ function handleArray(state: PathBuilderState, id: string, values: any[]) {
 function handleGraphNode(state: PathBuilderState, id: string, value: GraphNode) {
     let branch = queryByExampleString(value)
     if (branch.match) {
-        state.match()
+        state.markAsMatch()
     }
     let step = `/${id}::${branch.path}`
     state.addComplexPredicate(branch.match ? step : `[${step}]`)

@@ -54,7 +54,7 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
       `/PullRequest()[/contains::Commit()[@message='${message}']]`)
   }
 
-  @test "example from rj stream handler"() {
+  @test "handle externalized branch"() {
     let pathExpression = query.forRoot(
       new Commit()
         // TODO will be replaced by superior "and" version in next Cortex release
