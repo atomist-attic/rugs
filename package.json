@@ -3,8 +3,8 @@
   "version": "0.20.0",
   "description": "Helper functions for Rugs",
   "dependencies": {
-    "@atomist/cortex": "^0.23.0",
-    "@atomist/rug": "^0.23.0",
+    "@atomist/cortex": "^0.24.0",
+    "@atomist/rug": "^0.24.0",
     "mustache": "^2.3.0"
   },
   "scripts": {

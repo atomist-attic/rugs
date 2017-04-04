@@ -93,7 +93,12 @@ function queryByExampleString(g: any): Branch {
         let propOrFun = g[id]
         let value: any = null
         if (isRelevantFunction(id, propOrFun)) {
-            value = g[id]()
+            try {
+                value = g[id]()
+            }
+            catch(e) {
+                // Let value stay undefined
+            }
         }
         else if (isRelevantProperty(id, propOrFun)) {
             value = g[id]

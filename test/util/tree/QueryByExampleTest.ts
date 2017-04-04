@@ -48,7 +48,7 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
 
   @test "node with related node in array"() {
     let message = "Fixed all the bugs"
-    let pr = new PR2().addContains(new Commit().withMessage(message));
+    let pr = new PullRequest().addContains(new Commit().withMessage(message));
     let pathExpression = query.byExample(pr)
     expect(pathExpression.expression).to.equal(
       `/PullRequest()[/contains::Commit()[@message='${message}']]`)
@@ -57,8 +57,7 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
   @test "handle externalized branch"() {
     let pathExpression = query.forRoot(
       new Commit()
-        // TODO will be replaced by superior "and" version in next Cortex release
-        .withIncludes([new Delta()])
+        .addIncludes(new Delta())
         .withOn(FleshedOutRepo)
     )
     expect(pathExpression.expression).to.equal(
@@ -72,17 +71,3 @@ const FleshedOutRepo =
     .withOwnedBy(
     new Org()
     );
-
-// TODO this can go when we use latest version of stubs
-class PR2 extends PullRequest {
-
-  addContains(c: Commit): PullRequest {
-    if (this.contains() === undefined) {
-      return this.withContains([c]);
-    }
-    else {
-      return this.withContains(this.contains().concat([c]));
-    }
-  }
-
-}
