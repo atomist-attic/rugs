@@ -1,8 +1,27 @@
-import * as mustache from 'mustache'
-import { Issue } from "@atomist/cortex/Issue"
-// NOTE: plan is that this file can act as a facade for selecting rendering style for the message
-// based on some context (MappedParameter, PE etc)
-let list_issues = `{
+/*
+ * Copyright © 2017 Atomist, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// NOTE: plan is that this file can act as a facade for selecting
+// rendering style for the message based on some context
+// (MappedParameter, PE etc)
+
+import { Issue } from "@atomist/cortex/Issue";
+import * as mustache from "mustache";
+
+const listIssues = `{
   "attachments": [
     {{#issues}}
     {
@@ -27,27 +46,30 @@ let list_issues = `{
     }{{^last}}, {{/last}}
     {{/issues}}
   ]
-}`
+}`;
 
-//render github issues for slack
+/**
+ * Render GitHub issues for slack.
+ */
 function renderIssues(issuesList: Issue[], chatSystem?: string): string {
-  issuesList[issuesList.length - 1 ]["last"] = true;//horrible mustache hack
-  try{
-    return mustache.render(list_issues, 
-  {issues: issuesList, 
-    closed: function() {
-       return this.state === "closed"
-     } , 
-     assignee: function() {
-       return this.assignee !== undefined
-     }
-  })
-  }catch(ex) {
-    return `Failed to render message using template: ${ex}`
-  }
+    const last = "last";
+    issuesList[issuesList.length - 1][last] = true; // horrible mustache hack
+    try {
+        return mustache.render(listIssues, {
+            assignee() {
+                return this.assignee !== undefined;
+            },
+            closed() {
+                return this.state === "closed";
+            },
+            issues: issuesList,
+        });
+    } catch (ex) {
+        return `Failed to render message using template: ${ex}`;
+    }
 }
 
-let failure = `{
+const failure = `{
   "attachments": [
     {
       "fallback": "Unable to run command",
@@ -61,22 +83,26 @@ let failure = `{
       "text" : "{{{text}}}"
     }
   ]
-}`
+}`;
 
-//generic error rendering
+/**
+ * Generic error rendering.
+ */
 function renderError(msg: string, corrid?: string, chatSystem?: string): string {
-try{
-    return mustache.render(failure, {text: msg, corrid: corrid,
-      hasCorrelationId: function () {
-        return this.corrid !== undefined;
-      }
-    })
-  }catch(ex) {
-    return `Failed to render message using template: ${ex}`
-  }
+    try {
+        return mustache.render(failure, {
+            corrid,
+            hasCorrelationId() {
+                return this.corrid !== undefined;
+            },
+            text: msg,
+        });
+    } catch (ex) {
+        return `Failed to render message using template: ${ex}`;
+    }
 }
 
-let success = `{
+const success = `{
   "attachments": [
     {
       "fallback": "{{{text}}}",
@@ -87,15 +113,17 @@ let success = `{
       "text": "{{{text}}}"
     }
   ]
-}`
+}`;
 
-//generic success rendering
+/**
+ * Generic success rendering.
+ */
 function renderSuccess(msg: string, chatSystem?: string): string {
-try{
-    return mustache.render(success, {text: msg})
-  }catch(ex) {
-    return `Failed to render message using template: ${ex}`
-  }
+    try {
+        return mustache.render(success, { text: msg });
+    } catch (ex) {
+        return `Failed to render message using template: ${ex}`;
+    }
 }
 
-export {renderIssues, renderError, renderSuccess}
+export { renderIssues, renderError, renderSuccess };
