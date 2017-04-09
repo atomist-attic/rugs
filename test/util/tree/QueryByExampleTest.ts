@@ -30,7 +30,7 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
   @test "node with custom predicate"() {
     let pred = "[@foo='bar']"
     let b = query.enhance(new Build())
-      .withPredicate(pred)
+      .addPredicate(pred)
       .withType("mybuild")
 
     expect(b.$predicate).to.equal(pred)
@@ -39,17 +39,6 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
       `/Build()[@type='${b.type()}']${pred}`
     )
   }
-
-  // @test "node with simple property predicate OR"() {
-  //   let b = query.enhance(new Build()).withPredicate("x")
-  //     .withType("mybuild")
-  //     .withStatus("passed")   // Can a with return something more detailed, that says what
-    
-  //   //expect(b.predicate).to.equal("x")
-  //   let pathExpression = query.byExample(b)
-  //   expect(pathExpression.expression).to.equal(
-  //     `/Build()[@type='${b.type()}' or @status='${b.status()}']`)
-  // }
 
   @test "node with two simple property predicates"() {
     let b = new Build().withType("mybuild").withStatus("failed")

@@ -177,7 +177,9 @@ function isPrimitive(obj) {
  * and isn't a builder function whose name starts with "with" or "add"
  */
 function isRelevantFunction(id: string, f): boolean {
-    return isFunction(f) && ["nodeTags", "nodeName", "address", "constructor", "navigatedFrom"].indexOf(id) == -1 &&
+    return isFunction(f) && 
+        [ "nodeTags", "nodeName", "address", 
+            "constructor", "navigatedFrom"].indexOf(id) == -1 &&
         id.indexOf("with") != 0 &&
         id.indexOf("add") != 0;
 }
@@ -187,7 +189,8 @@ function isRelevantFunction(id: string, f): boolean {
  * and isn't prefixed with _, our convention for holding our internal state
  */
 function isRelevantProperty(id: string, p): boolean {
-    return !isFunction(p) && ["nodeTags", "nodeName"].indexOf(id) == -1 &&
+    return !isFunction(p) && 
+        [ "or", "not", "nodeTags", "nodeName"].indexOf(id) == -1 &&
         id.indexOf("_") != 0 &&
         id.indexOf("$") != 0;
 }
@@ -201,19 +204,22 @@ function isArray(obj) {
 }
 
 
+/**
+ * Mixin that adds the ability to perform
+ * logical operations and add custom predicates to nodes
+ */
 export class Enriched<T> {
 
-  $predicate: string;
+  $predicate: string = "";
 
   constructor(public $target) {}
 
-  withPredicate(predicate: string) {
+  addPredicate(predicate: string) {
     console.log(`Added predicate ${predicate} to ${JSON.stringify(this.$target)}`);
-    this.$predicate = predicate;
+    this.$predicate += predicate;
     return this;
   }
-
-  //or()
+  
 }
 
 /**
