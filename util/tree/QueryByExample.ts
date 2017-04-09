@@ -6,13 +6,13 @@ import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression"
  * @param a object to mark as a match
  */
 export function match(a) {
-    a._match = true
+    a.$match = true
     return a
 }
 
 /**
  * Create a query for this node graph, matching either the root or leaf nodes
- * marked with the _match property. Works through navigating public functions
+ * marked with the $match property. Works through navigating public functions
  * or properties that return other GraphNodes, or simple values (for simple predicates).
  * Doesn't insist on a GraphNode parameter as it could be a JSON structure with the required
  * properties instead
@@ -52,7 +52,7 @@ class PathBuilderState {
     private rootExpression: string
 
     constructor(g: any) {
-        this.isMatch = g._match && g._match
+        this.isMatch = g.$match && g.$match === true
         this.rootExpression = typeToAddress(g)
     }
 
@@ -89,6 +89,7 @@ class PathBuilderState {
 function queryByExampleString(g: any): Branch {
     let state = new PathBuilderState(g)
 
+    // TODO will only need properties. Not starting with _, either
     for (let id in g) {
         let propOrFun = g[id]
         let value: any = null
@@ -104,8 +105,14 @@ function queryByExampleString(g: any): Branch {
             value = g[id]
         }
         // Ignore undefined values
-        if (value)
+        if (value) { 
             handleAny(g, state, id, value)
+        }
+    }
+
+    // Add custom predicate
+    if (g.$predicate) {
+        state.addComplexPredicate(g.$predicate)
     }
     return state.branch()
 }
@@ -172,7 +179,7 @@ function isPrimitive(obj) {
 function isRelevantFunction(id: string, f): boolean {
     return isFunction(f) && ["nodeTags", "nodeName", "address", "constructor", "navigatedFrom"].indexOf(id) == -1 &&
         id.indexOf("with") != 0 &&
-        id.indexOf("add") != 0
+        id.indexOf("add") != 0;
 }
 
 /**
@@ -181,7 +188,8 @@ function isRelevantFunction(id: string, f): boolean {
  */
 function isRelevantProperty(id: string, p): boolean {
     return !isFunction(p) && ["nodeTags", "nodeName"].indexOf(id) == -1 &&
-        id.indexOf("_") != 0
+        id.indexOf("_") != 0 &&
+        id.indexOf("$") != 0;
 }
 
 function isFunction(obj) {
@@ -190,4 +198,33 @@ function isFunction(obj) {
 
 function isArray(obj) {
     return obj.constructor === Array
+}
+
+
+export class Enriched<T> {
+
+  $predicate: string;
+
+  constructor(public $target) {}
+
+  withPredicate(predicate: string) {
+    console.log(`Added predicate ${predicate} to ${JSON.stringify(this.$target)}`);
+    this.$predicate = predicate;
+    return this;
+  }
+
+  //or()
+}
+
+/**
+ * Return a proxy wrapping the given node to return
+ * a mixin proxy.
+ * @param base target
+ */
+export function enhance(base) {
+   let enricher = new Enriched(base) as any;
+    for (let id in base) {
+        enricher[id] = base[id];
+    }
+    return enricher;
 }
