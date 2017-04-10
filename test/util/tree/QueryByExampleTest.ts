@@ -100,6 +100,14 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
     expect(pathExpression.expression).to.equal(`/Build()[@type='${b.type()}'][/on::Repo()]`)
   }
 
+  @test "node with related node conditional"() {
+    let b = query.enhance<Build>(new Build())
+      .withType("mybuild")
+      .optional(b => b.withOn(new Repo()))
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(`/Build()[@type='${b.type()}'][/on::Repo()]?`)
+  }
+
   @test "node with related node but in match"() {
     let b = new Build().withType("mybuild").withOn(query.match(new Repo()))
     let pathExpression = query.byExample(b)

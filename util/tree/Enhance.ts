@@ -18,8 +18,15 @@ export class Enriched<T> {
     return this as any;
   }
 
-  // We handle NOT and OR by cloning the present node
+  // We handle opt and NOT and OR by cloning the present node
   // and running functions to get branches we can add as custom predicates
+  optional(what: (T) => void): EnricherReturn<T> {
+      let clone = enhance(this.$target);
+      what(clone);
+      let pred = query.byExampleString(clone);
+      this.addPredicate(pred + "?");
+      return this as any;
+  }
 
   not(what: (T) => void): EnricherReturn<T> {
       let clone = enhance(this.$target);
