@@ -65,7 +65,7 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
   }
 
   @test "node with two ORed simple property predicates"() {
-    let b = query.enhance<Build>(new Build()).
+    let b = query.enhance>(new Build()).
       or(b => b.withType("mybuild"), b => b.withStatus("failed"))
     let pathExpression = query.byExample(b)
     expect(pathExpression.expression).to.equal(
