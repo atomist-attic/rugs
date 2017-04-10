@@ -29,7 +29,7 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
 
   @test "node with custom predicate"() {
     let pred = "[@foo='bar']"
-    let b = query.enhance(new Build())
+    let b = query.enhance<Build>(new Build())
       .addPredicate(pred)
       .withType("mybuild")
 
@@ -62,6 +62,14 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
     let b = new Build().withType("mybuild").withStatus("failed")
     let pathExpression = query.byExample(b)
     expect(pathExpression.expression).to.equal(`/Build()[@status='${b.status()}'][@type='${b.type()}']`)
+  }
+
+  @test "node with two ORed simple property predicates"() {
+    let b = query.enhance<Build>(new Build()).
+      or(b => b.withType("mybuild"), b => b.withStatus("failed"))
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@status='failed'][@type='mybuild']`)
   }
 
   @test "node with related node"() {

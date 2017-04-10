@@ -220,7 +220,7 @@ function isPrimitive(obj) {
  */
 function isRelevantFunction(id: string, f): boolean {
     return isFunction(f) && 
-        [ "nodeTags", "nodeName", "address", 
+        [ "or", "nodeTags", "nodeName", "address", 
             "constructor", "navigatedFrom"].indexOf(id) == -1 &&
         id.indexOf("with") != 0 &&
         id.indexOf("add") != 0;
@@ -232,7 +232,7 @@ function isRelevantFunction(id: string, f): boolean {
  */
 function isRelevantProperty(id: string, p): boolean {
     return !isFunction(p) && 
-        [ "or", "not", "nodeTags", "nodeName"].indexOf(id) == -1 &&
+        [ "not", "nodeTags", "nodeName"].indexOf(id) == -1 &&
         id.indexOf("_") != 0 &&
         id.indexOf("$") != 0;
 }
@@ -245,6 +245,7 @@ function isArray(obj) {
     return obj.constructor === Array
 }
 
+//type EnricherReturn<T> = Enriched<T> & T
 
 /**
  * Mixin that adds the ability to perform
@@ -256,10 +257,14 @@ export class Enriched<T> {
 
   constructor(public $target) {}
 
-  addPredicate(predicate: string) {
+  addPredicate(predicate: string): Enriched<T> & T {
     console.log(`Added predicate ${predicate} to ${JSON.stringify(this.$target)}`);
     this.$predicate += predicate;
-    return this;
+    return this as any;
+  }
+
+  or(l: (T) => void, r: (T) => void): Enriched<T> & T {
+    return this as any;
   }
   
 }
@@ -269,7 +274,7 @@ export class Enriched<T> {
  * a mixin proxy.
  * @param base target
  */
-export function enhance(base) {
+export function enhance<T>(base): Enriched<T> & T {
    let enricher = new Enriched(base) as any;
     for (let id in base) {
         enricher[id] = base[id];
