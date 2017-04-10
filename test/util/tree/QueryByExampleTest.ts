@@ -41,18 +41,19 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
   }
 
   @test "node with not simple property predicate"() {
-    let b = new Build()
+    let b = query.enhance<Build>(new Build())
       .withType("mybuild")
-      .withStatus(query.not("failed"))
+      .not(b => b.withStatus("failed"))
     let pathExpression = query.byExample(b)
     expect(pathExpression.expression).to.equal(
-      `/Build()[not @status='failed'][@type='mybuild']`)
+      `/Build()[@type='mybuild'][not @status='failed']`)
   }
 
   @test "node with not complex property predicate"() {
-    let b = new Build()
+    let b = query.enhance<Build>(new Build())
       .withType("mybuild")
-      .withOn(query.not(new Repo()))
+      .not(b => b.withOn(new Repo()))
+      
     let pathExpression = query.byExample(b)
     expect(pathExpression.expression).to.equal(
       `/Build()[@type='mybuild'][not /on::Repo()]`)
@@ -61,15 +62,16 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
   @test "node with two simple property predicates"() {
     let b = new Build().withType("mybuild").withStatus("failed")
     let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(`/Build()[@status='${b.status()}'][@type='${b.type()}']`)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@status='${b.status()}'][@type='${b.type()}']`)
   }
 
   @test "node with two ORed simple property predicates"() {
-    let b = query.enhance>(new Build()).
+    let b = query.enhance(new Build()).
       or(b => b.withType("mybuild"), b => b.withStatus("failed"))
     let pathExpression = query.byExample(b)
     expect(pathExpression.expression).to.equal(
-      `/Build()[@status='failed'][@type='mybuild']`)
+      `/Build()[@type='mybuild' or @status='failed']`)
   }
 
   @test "node with related node"() {

@@ -10,37 +10,6 @@ export function match(a) {
     return a
 }
 
-const NegationPrefix = "___negated_"
-
-export function not(a) {
-    if (isPrimitive(a)) {
-        console.log(`Negate primitive ${a}`);
-        return NegationPrefix + a;
-    }
-    else {
-        console.log(`Negate non-primitive ${a}`);
-        a.$negated = true;
-        return a;
-    }
-}
-
-function isNegated(a) {
-    return a.$negated || a.indexOf && a.indexOf(NegationPrefix) == 0;
-}
-
-function extractNegated(a) {
-    let retVal
-    switch (typeof(a)) {
-        case 'string' :
-            retVal = (<string>a).substr(NegationPrefix.length)
-            break;
-        default: 
-            retVal = a;
-    }
-    console.log(`Extract negated returning [${retVal}] for type ${typeof(a)}`)
-    return retVal;
-}
-
 /**
  * Create a query for this node graph, matching either the root or leaf nodes
  * marked with the $match property. Works through navigating public functions
@@ -51,7 +20,7 @@ function extractNegated(a) {
  * @type L type of leaf (may be the same)
  */
 export function byExample<R extends GraphNode, L extends GraphNode>(g: any): PathExpression<R, L> {
-    let pathExpression = `/${queryByExampleString(g).path}`
+    let pathExpression = `/${queryByExampleString(g, false).path}`
     console.log(`Created path expression [${pathExpression}] for ${JSON.stringify(g)}`)
     return new PathExpression<R, L>(pathExpression)
 }
@@ -82,9 +51,9 @@ class PathBuilderState {
     private complexPredicates = ""
     private rootExpression: string
 
-    constructor(g: any) {
-        this.isMatch = g.$match && g.$match === true
-        this.rootExpression = typeToAddress(g)
+    constructor(g: any, skipAddress: boolean) {
+        this.isMatch = g.$match && g.$match === true;
+        this.rootExpression = skipAddress ? "" : typeToAddress(g);
     }
 
     addSimplePredicate(pred: string) {
@@ -113,12 +82,16 @@ class PathBuilderState {
     }
 }
 
+export function byExampleString(g: any): string {
+    return queryByExampleString(g, true).path;
+}
+
 /**
  * If we're going down a branch that we need a match in, 
  * return the branch NOT as a predicate.
  */
-function queryByExampleString(g: any): Branch {
-    let state = new PathBuilderState(g)
+function queryByExampleString(g: any, skipAddress: boolean): Branch {
+    let state = new PathBuilderState(g, skipAddress)
 
     // TODO will only need properties. Not starting with _, either
     for (let id in g) {
@@ -170,13 +143,7 @@ function handleAny(root: any, state: PathBuilderState, id: string, value) {
 }
 
 function handlePrimitive(state: PathBuilderState, id: string, value) {
-    if (isNegated(value)) {
-        let v = extractNegated(value);
-        state.addSimplePredicate(`[not @${id}='${v}']`)
-    }
-    else {
-        state.addSimplePredicate(`[@${id}='${value}']`)
-    }
+    state.addSimplePredicate(`[@${id}='${value}']`)
 }
 
 function handleArray(state: PathBuilderState, id: string, values: any[]) {
@@ -186,15 +153,12 @@ function handleArray(state: PathBuilderState, id: string, values: any[]) {
 }
 
 function handleGraphNode(state: PathBuilderState, id: string, value: GraphNode) {
-    let branch = queryByExampleString(value)
+    let branch = queryByExampleString(value, false)
     let step = `/${id}::${branch.path}`
     if (branch.match) {
         state.markAsMatch()
         state.addComplexPredicate(step)
     } 
-    else if (isNegated(value)) {
-        state.addComplexPredicate(`[not ${step}]`)
-    }
     else {
         state.addComplexPredicate(`[${step}]`)
     }
@@ -245,39 +209,6 @@ function isArray(obj) {
     return obj.constructor === Array
 }
 
-//type EnricherReturn<T> = Enriched<T> & T
+import {enhance} from "./Enricher"
 
-/**
- * Mixin that adds the ability to perform
- * logical operations and add custom predicates to nodes
- */
-export class Enriched<T> {
-
-  $predicate: string = "";
-
-  constructor(public $target) {}
-
-  addPredicate(predicate: string): Enriched<T> & T {
-    console.log(`Added predicate ${predicate} to ${JSON.stringify(this.$target)}`);
-    this.$predicate += predicate;
-    return this as any;
-  }
-
-  or(l: (T) => void, r: (T) => void): Enriched<T> & T {
-    return this as any;
-  }
-  
-}
-
-/**
- * Return a proxy wrapping the given node to return
- * a mixin proxy.
- * @param base target
- */
-export function enhance<T>(base): Enriched<T> & T {
-   let enricher = new Enriched(base) as any;
-    for (let id in base) {
-        enricher[id] = base[id];
-    }
-    return enricher;
-}
+export {enhance}
