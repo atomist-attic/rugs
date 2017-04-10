@@ -10,6 +10,37 @@ export function match(a) {
     return a
 }
 
+const NegationPrefix = "___negated_"
+
+export function not(a) {
+    if (isPrimitive(a)) {
+        console.log(`Negate primitive ${a}`);
+        return NegationPrefix + a;
+    }
+    else {
+        console.log(`Negate non-primitive ${a}`);
+        a.$negated = true;
+        return a;
+    }
+}
+
+function isNegated(a) {
+    return a.$negated || a.indexOf && a.indexOf(NegationPrefix) == 0;
+}
+
+function extractNegated(a) {
+    let retVal
+    switch (typeof(a)) {
+        case 'string' :
+            retVal = (<string>a).substr(NegationPrefix.length)
+            break;
+        default: 
+            retVal = a;
+    }
+    console.log(`Extract negated returning [${retVal}] for type ${typeof(a)}`)
+    return retVal;
+}
+
 /**
  * Create a query for this node graph, matching either the root or leaf nodes
  * marked with the $match property. Works through navigating public functions
@@ -130,7 +161,7 @@ function handleAny(root: any, state: PathBuilderState, id: string, value) {
     else if (isGraphNode(value)) {
         handleGraphNode(state, id, value)
     }
-    else if (isPrimitive(value) != -1) {
+    else if (isPrimitive(value)) {
         handlePrimitive(state, id, value)
     }
     else {
@@ -139,8 +170,13 @@ function handleAny(root: any, state: PathBuilderState, id: string, value) {
 }
 
 function handlePrimitive(state: PathBuilderState, id: string, value) {
-    //console.log(`Non graph node result of invoking ${id} was [${value}]`)
-    state.addSimplePredicate(`[@${id}='${value}']`)
+    if (isNegated(value)) {
+        let v = extractNegated(value);
+        state.addSimplePredicate(`[not @${id}='${v}']`)
+    }
+    else {
+        state.addSimplePredicate(`[@${id}='${value}']`)
+    }
 }
 
 function handleArray(state: PathBuilderState, id: string, values: any[]) {
@@ -151,11 +187,17 @@ function handleArray(state: PathBuilderState, id: string, values: any[]) {
 
 function handleGraphNode(state: PathBuilderState, id: string, value: GraphNode) {
     let branch = queryByExampleString(value)
+    let step = `/${id}::${branch.path}`
     if (branch.match) {
         state.markAsMatch()
+        state.addComplexPredicate(step)
+    } 
+    else if (isNegated(value)) {
+        state.addComplexPredicate(`[not ${step}]`)
     }
-    let step = `/${id}::${branch.path}`
-    state.addComplexPredicate(branch.match ? step : `[${step}]`)
+    else {
+        state.addComplexPredicate(`[${step}]`)
+    }
 }
 
 function typeToAddress(g: any): string {
@@ -169,7 +211,7 @@ function isGraphNode(obj) {
 }
 
 function isPrimitive(obj) {
-    return ["string", "number", "boolean"].indexOf(typeof obj)
+    return ["string", "number", "boolean"].indexOf(typeof obj) > -1
 }
 
 /**

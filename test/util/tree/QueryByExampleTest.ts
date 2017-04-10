@@ -40,6 +40,24 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
     )
   }
 
+  @test "node with not simple property predicate"() {
+    let b = new Build()
+      .withType("mybuild")
+      .withStatus(query.not("failed"))
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[not @status='failed'][@type='mybuild']`)
+  }
+
+  @test "node with not complex property predicate"() {
+    let b = new Build()
+      .withType("mybuild")
+      .withOn(query.not(new Repo()))
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@type='mybuild'][not /on::Repo()]`)
+  }
+
   @test "node with two simple property predicates"() {
     let b = new Build().withType("mybuild").withStatus("failed")
     let pathExpression = query.byExample(b)
