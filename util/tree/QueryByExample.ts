@@ -114,9 +114,8 @@ function queryByExampleString(g: any, skipAddress: boolean): Branch {
         }
     }
 
-    // Add custom predicate
-    if (g.$predicate) {
-        state.addComplexPredicate(g.$predicate)
+    if (g.$customPredicate) {
+        state.addComplexPredicate(g.$customPredicate)
     }
     return state.branch()
 }
@@ -209,6 +208,6 @@ function isArray(obj) {
     return obj.constructor === Array
 }
 
-import {enhance} from "./Enricher"
+import {enhance} from "./Enhance"
 
 export {enhance}

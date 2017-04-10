@@ -33,7 +33,8 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
       .addPredicate(pred)
       .withType("mybuild")
 
-    expect(b.$predicate).to.equal(pred)
+    // Get past visibility rules by detyping
+    expect((<any>b).$customPredicate).to.equal(pred)
     let pathExpression = query.byExample(b)
     expect(pathExpression.expression).to.equal(
       `/Build()[@type='${b.type()}']${pred}`
@@ -72,6 +73,25 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
     let pathExpression = query.byExample(b)
     expect(pathExpression.expression).to.equal(
       `/Build()[@type='mybuild' or @status='failed']`)
+  }
+
+  @test "node with two ORed simple property predicates and NOT complex structure"() {
+    let b = query.enhance(new Build())
+      .or(b => b.withType("mybuild"), b => b.withStatus("failed"))
+      .not(b => b.withOn(new Repo().withName("rugs")))
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@type='mybuild' or @status='failed'][not /on::Repo()[@name='rugs']]`)
+  }
+
+  @test "node with two ORed simple property predicates and NOT complex structure and simple property"() {
+    let b = query.enhance<Build>(new Build())
+      .or(b => b.withType("mybuild"), b => b.withStatus("failed"))
+      .not(b => b.withOn(new Repo().withName("rugs")))
+      .withBuildUrl("foobar")
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@buildUrl='foobar'][@type='mybuild' or @status='failed'][not /on::Repo()[@name='rugs']]`)
   }
 
   @test "node with related node"() {

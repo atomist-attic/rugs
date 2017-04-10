@@ -1,6 +1,6 @@
 import * as query from "./QueryByExample"
 
-//type EnricherReturn<T> = Enriched<T> & T
+type EnricherReturn<T> = Enriched<T> & T
 
 /**
  * Mixin that adds the ability to perform
@@ -8,17 +8,20 @@ import * as query from "./QueryByExample"
  */
 export class Enriched<T> {
 
-  $predicate: string = "";
+  private $customPredicate: string = "";
 
   constructor(private $target) {}
-
-  addPredicate(predicate: string): Enriched<T> & T {
-    console.log(`Added predicate ${predicate} to ${JSON.stringify(this.$target)}`);
-    this.$predicate += predicate;
+  
+  addPredicate(predicate: string): EnricherReturn<T> {
+    //console.log(`Added predicate ${predicate} to ${JSON.stringify(this.$target)}`);
+    this.$customPredicate += predicate;
     return this as any;
   }
 
-  not(what: (T) => void): Enriched<T> & T {
+  // We handle NOT and OR by cloning the present node
+  // and running functions to get branches we can add as custom predicates
+
+  not(what: (T) => void): EnricherReturn<T> {
       let clone = enhance(this.$target);
       what(clone);
       let pred = query.byExampleString(clone);
@@ -26,7 +29,7 @@ export class Enriched<T> {
       return this as any;
   }
 
-  or(l: (T) => void, r: (T) => void): Enriched<T> & T {
+  or(l: (T) => void, r: (T) => void): EnricherReturn<T> {
       let leftClone = enhance(this.$target);
       let rightClone = enhance(this.$target);
       l(leftClone);
@@ -34,7 +37,6 @@ export class Enriched<T> {
       let pred = 
         query.byExampleString(leftClone).replace("]", " or ") + 
         query.byExampleString(rightClone).replace("[", "");
-      console.log(`Predicate is [${pred}]`);
       this.addPredicate(pred);
       return this as any;
   }
@@ -46,7 +48,7 @@ export class Enriched<T> {
  * a mixin proxy.
  * @param base target
  */
-export function enhance<T>(base): Enriched<T> & T {
+export function enhance<T>(base): EnricherReturn<T> {
    let enricher = new Enriched(base) as any;
     for (let id in base) {
         enricher[id] = base[id];
