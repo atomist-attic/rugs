@@ -1,4 +1,20 @@
-import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression"
+/*
+ * Copyright © 2017 Atomist, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression";
 
 /**
  * Mark this object as a match that will be
@@ -6,8 +22,8 @@ import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression"
  * @param a object to mark as a match
  */
 export function match(a) {
-    a._match = true
-    return a
+    a._match = true;
+    return a;
 }
 
 /**
@@ -20,9 +36,8 @@ export function match(a) {
  * @type L type of leaf (may be the same)
  */
 export function byExample<R extends GraphNode, L extends GraphNode>(g: any): PathExpression<R, L> {
-    let pathExpression = `/${queryByExampleString(g).path}`
-    console.log(`Created path expression [${pathExpression}] for ${JSON.stringify(g)}`)
-    return new PathExpression<R, L>(pathExpression)
+    const pathExpression = `/${queryByExampleString(g).path}`;
+    return new PathExpression<R, L>(pathExpression);
 }
 
 /**
@@ -32,7 +47,7 @@ export function byExample<R extends GraphNode, L extends GraphNode>(g: any): Pat
  * @param g root node
  */
 export function forRoot<R extends GraphNode>(g: any): PathExpression<R, R> {
-    return byExample<R, R>(g)
+    return byExample<R, R>(g);
 }
 
 /**
@@ -46,123 +61,117 @@ class Branch {
 // Internal state of query string generation
 class PathBuilderState {
 
-    private isMatch: boolean
-    private simplePredicates = ""
-    private complexPredicates = ""
-    private rootExpression: string
+    private isMatch: boolean;
+    private simplePredicates = "";
+    private complexPredicates = "";
+    private rootExpression: string;
 
     constructor(g: any) {
-        this.isMatch = g._match && g._match
-        this.rootExpression = typeToAddress(g)
+        this.isMatch = g._match && g._match;
+        this.rootExpression = typeToAddress(g);
     }
 
-    addSimplePredicate(pred: string) {
-        this.simplePredicates += pred
+    public addSimplePredicate(pred: string) {
+        this.simplePredicates += pred;
     }
 
-    addComplexPredicate(pred: string) {
-        this.complexPredicates += pred
+    public addComplexPredicate(pred: string) {
+        this.complexPredicates += pred;
     }
 
     /**
      * Mark this branch as a match branch, not a predicate?
      */
-    markAsMatch() {
-        this.isMatch = true
+    public markAsMatch() {
+        this.isMatch = true;
     }
 
     /**
      * The branch built from the state we've built up.
      * This is the ultimate objective.
      */
-    branch() {
+    public branch() {
         return new Branch(
             this.rootExpression + this.simplePredicates + this.complexPredicates,
-            this.isMatch)
+            this.isMatch);
     }
 }
 
 /**
- * If we're going down a branch that we need a match in, 
+ * If we're going down a branch that we need a match in,
  * return the branch NOT as a predicate.
  */
 function queryByExampleString(g: any): Branch {
-    let state = new PathBuilderState(g)
+    const state = new PathBuilderState(g);
 
-    for (let id in g) {
-        let propOrFun = g[id]
-        let value: any = null
+    for (const id in g) {
+        const propOrFun = g[id];
+        let value: any = null;
         if (isRelevantFunction(id, propOrFun)) {
             try {
-                value = g[id]()
-            }
-            catch(e) {
+                value = g[id]();
+            } catch (e) {
                 // Let value stay undefined
             }
-        }
-        else if (isRelevantProperty(id, propOrFun)) {
-            value = g[id]
+        } else if (isRelevantProperty(id, propOrFun)) {
+            value = g[id];
         }
         // Ignore undefined values
-        if (value)
-            handleAny(g, state, id, value)
+        if (value) {
+            handleAny(g, state, id, value);
+        }
     }
-    return state.branch()
+    return state.branch();
 }
 
 function handleAny(root: any, state: PathBuilderState, id: string, value) {
     if (value == null) {
-        throw new Error("What to do with explicit null?")
-    }
-    else if (value === root) {
-        throw new Error(`Cycle detected processing property [${id}] returning ${JSON.stringify(value)} with state ${state}`)
-    }
-    else if (isArray(value)) {
-        handleArray(state, id, value)
-    }
-    else if (isGraphNode(value)) {
-        handleGraphNode(state, id, value)
-    }
-    else if (isPrimitive(value) != -1) {
-        handlePrimitive(state, id, value)
-    }
-    else {
-        //console.log(`Don't know what to do with unfamiliar result of invoking [${id}] was [${value}]`)
+        throw new Error("What to do with explicit null?");
+    } else if (value === root) {
+        const e = `Cycle detected processing property [${id}] returning ${JSON.stringify(value)} with state ${state}`;
+        throw new Error(e);
+    } else if (isArray(value)) {
+        handleArray(state, id, value);
+    } else if (isGraphNode(value)) {
+        handleGraphNode(state, id, value);
+    } else if (isPrimitive(value) !== -1) {
+        handlePrimitive(state, id, value);
+    } else {
+        // console.log(`Don't know what to do with unfamiliar result of invoking [${id}] was [${value}]`);
     }
 }
 
 function handlePrimitive(state: PathBuilderState, id: string, value) {
-    //console.log(`Non graph node result of invoking ${id} was [${value}]`)
-    state.addSimplePredicate(`[@${id}='${value}']`)
+    state.addSimplePredicate(`[@${id}='${value}']`);
 }
 
 function handleArray(state: PathBuilderState, id: string, values: any[]) {
-    values.forEach(v => {
-        handleAny(values, state, id, v)
-    })
+    values.forEach((v) => {
+        handleAny(values, state, id, v);
+    });
 }
 
 function handleGraphNode(state: PathBuilderState, id: string, value: GraphNode) {
-    let branch = queryByExampleString(value)
+    const branch = queryByExampleString(value);
     if (branch.match) {
-        state.markAsMatch()
+        state.markAsMatch();
     }
-    let step = `/${id}::${branch.path}`
-    state.addComplexPredicate(branch.match ? step : `[${step}]`)
+    const step = `/${id}::${branch.path}`;
+    state.addComplexPredicate(branch.match ? step : `[${step}]`);
 }
 
 function typeToAddress(g: any): string {
     // TODO fragile. Or is this a convention we can rely on?
-    return isFunction(g.nodeTags) ? `${g.nodeTags()[0]}()` : `${g.nodeTags[0]}()`
+    return isFunction(g.nodeTags) ? `${g.nodeTags()[0]}()` : `${g.nodeTags[0]}()`;
 }
 
 function isGraphNode(obj) {
     // Simple test for whether an object is a GraphNode
-    return obj.nodeTags && obj.nodeName
+    return obj.nodeTags && obj.nodeName;
 }
 
 function isPrimitive(obj) {
-    return ["string", "number", "boolean"].indexOf(typeof obj)
+    return ["string", "number", "boolean"].indexOf(typeof obj);
 }
 
 /**
@@ -170,9 +179,10 @@ function isPrimitive(obj) {
  * and isn't a builder function whose name starts with "with" or "add"
  */
 function isRelevantFunction(id: string, f): boolean {
-    return isFunction(f) && ["nodeTags", "nodeName", "address", "constructor", "navigatedFrom"].indexOf(id) == -1 &&
-        id.indexOf("with") != 0 &&
-        id.indexOf("add") != 0
+    return isFunction(f) &&
+        ["nodeTags", "nodeName", "address", "constructor", "navigatedFrom"].indexOf(id) === -1 &&
+        id.indexOf("with") !== 0 &&
+        id.indexOf("add") !== 0;
 }
 
 /**
@@ -180,8 +190,8 @@ function isRelevantFunction(id: string, f): boolean {
  * and isn't prefixed with _, our convention for holding our internal state
  */
 function isRelevantProperty(id: string, p): boolean {
-    return !isFunction(p) && ["nodeTags", "nodeName"].indexOf(id) == -1 &&
-        id.indexOf("_") != 0
+    return !isFunction(p) && ["nodeTags", "nodeName"].indexOf(id) === -1 &&
+        id.indexOf("_") !== 0;
 }
 
 function isFunction(obj) {
@@ -189,5 +199,5 @@ function isFunction(obj) {
 }
 
 function isArray(obj) {
-    return obj.constructor === Array
+    return obj.constructor === Array;
 }
