@@ -18,7 +18,7 @@ export class UpgradeVersion implements EditProject {
     
     edit(project: Project) {    
 
-        let eng: PathExpressionEngine = project.context().pathExpressionEngine();
+        let eng: PathExpressionEngine = project.context.pathExpressionEngine;
         let search = "some/path/expression"
         eng.with<TextTreeNode>(project, search, version => {
             if (version.value() != this.desiredVersion) {

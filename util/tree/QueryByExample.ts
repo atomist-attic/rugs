@@ -105,16 +105,13 @@ function queryByExampleString(g: any): Branch {
     const state = new PathBuilderState(g);
 
     for (const id in g) {
-        const propOrFun = g[id];
         let value: any = null;
-        if (isRelevantFunction(id, propOrFun)) {
+        if (isRelevantPropertyName(id)) {
             try {
-                value = g[id]();
+                value = g[id];
             } catch (e) {
                 // Let value stay undefined
             }
-        } else if (isRelevantProperty(id, propOrFun)) {
-            value = g[id];
         }
         // Ignore undefined values
         if (value) {
@@ -175,22 +172,11 @@ function isPrimitive(obj) {
 }
 
 /**
- * Is this a function we care about? That is, it's not one of our well-known functions
- * and isn't a builder function whose name starts with "with" or "add"
- */
-function isRelevantFunction(id: string, f): boolean {
-    return isFunction(f) &&
-        ["nodeTags", "nodeName", "address", "constructor", "navigatedFrom"].indexOf(id) === -1 &&
-        id.indexOf("with") !== 0 &&
-        id.indexOf("add") !== 0;
-}
-
-/**
  * Is this a property we care about? That is, it's not one of our well-known properties
  * and isn't prefixed with _, our convention for holding our internal state
  */
-function isRelevantProperty(id: string, p): boolean {
-    return !isFunction(p) && ["nodeTags", "nodeName"].indexOf(id) === -1 &&
+function isRelevantPropertyName(id: string): boolean {
+    return ["nodeTags", "nodeName"].indexOf(id) === -1 &&
         id.indexOf("_") !== 0;
 }
 

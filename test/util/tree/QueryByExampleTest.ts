@@ -22,52 +22,54 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
   }
 
   @test "node with simple property predicate"() {
-    let b = new Build().withType("mybuild")
+    let b = new Build().withProvider("mybuild")
     let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(`/Build()[@type='${b.type()}']`)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@provider='${b.provider}']`)
   }
 
   @test "node with two simple property predicates"() {
-    let b = new Build().withType("mybuild").withStatus("failed")
+    let b = new Build().withProvider("mybuild").withStatus("failed")
     let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(`/Build()[@status='${b.status()}'][@type='${b.type()}']`)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@provider='${b.provider}'][@status='${b.status}']`)
   }
 
   @test "node with related node"() {
-    let b = new Build().withType("mybuild").withOn(new Repo())
+    let b = new Build().withProvider("mybuild").withRepo(new Repo())
     let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(`/Build()[@type='${b.type()}'][/on::Repo()]`)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@provider='${b.provider}'][/repo::Repo()]`)
   }
 
   @test "node with related node but in match"() {
-    let b = new Build().withType("mybuild").withOn(query.match(new Repo()))
+    let b = new Build().withProvider("mybuild")
+      .withRepo(query.match(new Repo()))
     let pathExpression = query.byExample(b)
     expect(pathExpression.expression).to.equal(
-      `/Build()[@type='${b.type()}']/on::Repo()`)
+      `/Build()[@provider='${b.provider}']/repo::Repo()`)
   }
 
   @test "node with related node in array"() {
     let message = "Fixed all the bugs"
-    let pr = new PullRequest().addContains(new Commit().withMessage(message));
+    let pr = new PullRequest().addCommits(new Commit().withMessage(message));
     let pathExpression = query.byExample(pr)
     expect(pathExpression.expression).to.equal(
-      `/PullRequest()[/contains::Commit()[@message='${message}']]`)
+      `/PullRequest()[/commits::Commit()[@message='${message}']]`)
   }
 
   @test "handle externalized branch"() {
     let pathExpression = query.forRoot(
       new Commit()
-        .addIncludes(new Delta())
-        .withOn(FleshedOutRepo)
+        .addDeltas(new Delta())
+        .withRepo(FleshedOutRepo)
     )
     expect(pathExpression.expression).to.equal(
-      `/Commit()[/includes::Delta()][/on::Repo()[/ownedBy::Org()]]`)
+      `/Commit()[/deltas::Delta()][/repo::Repo()[/org::Org()]]`)
   }
 }
 
 // Example of using external function to build
 const FleshedOutRepo =
   new Repo()
-    .withOwnedBy(
-    new Org()
-    );
+    .withOrg(new Org());
