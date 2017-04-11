@@ -29,9 +29,9 @@ class GenericErrorHandler implements HandleResponse<any> {
     public corrid: string;
 
     public handle(response: Response<any>): Plan {
-        const body = response.body() != null ? "(" + response.body() + ")" : "";
+        const body = response.body != null ? "(" + response.body + ")" : "";
         const msg = this.msg === undefined ? "" : this.msg;
-        return new Plan().add(renderError(`${msg}${response.msg()}${body}`, this.corrid));
+        return new Plan().add(renderError(`${msg}${response.msg}${body}`, this.corrid));
     }
 }
 
