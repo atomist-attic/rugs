@@ -42,6 +42,15 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
       `/Build()[@provider='${b.provider}'][/repo::Repo()]`)
   }
 
+  @test "node with related node and simple custom predicate"() {
+    let b = query.enhance(new Build())
+      .withProvider("mybuild").withRepo(new Repo())
+      .withCustomPredicate("[@name='amy']")
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@provider='${b.provider}'][/repo::Repo()][@name='amy']`)
+  }
+
   @test "node with related node but in match"() {
     let b = new Build().withProvider("mybuild")
       .withRepo(query.match(new Repo()))

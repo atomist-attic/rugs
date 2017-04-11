@@ -15,6 +15,10 @@
  */
 
 import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression";
+import * as enhancer from "./Enhance";
+import { enhance }  from "./Enhance";
+
+export { enhance };
 
 /**
  * Mark this object as a match that will be
@@ -22,8 +26,12 @@ import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression";
  * @param a object to mark as a match
  */
 export function match(a) {
-    a._match = true;
+    a.$match = true;
     return a;
+}
+
+function isMatch(a) {
+    return a.$match === true;
 }
 
 /**
@@ -66,9 +74,9 @@ class PathBuilderState {
     private complexPredicates = "";
     private rootExpression: string;
 
-    constructor(g: any) {
-        this.isMatch = g._match && g._match;
-        this.rootExpression = typeToAddress(g);
+    constructor(private root: any) {
+        this.isMatch = isMatch(root);
+        this.rootExpression = typeToAddress(root);
     }
 
     public addSimplePredicate(pred: string) {
@@ -92,7 +100,10 @@ class PathBuilderState {
      */
     public branch() {
         return new Branch(
-            this.rootExpression + this.simplePredicates + this.complexPredicates,
+            this.rootExpression + 
+                this.simplePredicates + 
+                this.complexPredicates + 
+                enhancer.customPredicate(this.root),
             this.isMatch);
     }
 }
@@ -177,7 +188,8 @@ function isPrimitive(obj) {
  */
 function isRelevantPropertyName(id: string): boolean {
     return ["nodeTags", "nodeName"].indexOf(id) === -1 &&
-        id.indexOf("_") !== 0;
+        id.indexOf("_") !== 0 &&
+        id.indexOf("$") !== 0;
 }
 
 function isFunction(obj) {
