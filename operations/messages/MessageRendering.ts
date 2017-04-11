@@ -54,19 +54,16 @@ const listIssues = `{
 function renderIssues(issuesList: Issue[], chatSystem?: string): string {
     const last = "last";
     issuesList[issuesList.length - 1][last] = true; // horrible mustache hack
-    try {
-        return mustache.render(listIssues, {
-            assignee() {
-                return this.assignee !== undefined;
-            },
-            closed() {
-                return this.state === "closed";
-            },
-            issues: issuesList,
-        });
-    } catch (ex) {
-        return `Failed to render message using template: ${ex}`;
-    }
+
+    return mustache.render(listIssues, {
+        assignee() {
+            return this.assignee !== undefined;
+        },
+        closed() {
+            return this.state === "closed";
+        },
+        issues: issuesList,
+    });
 }
 
 const failure = `{
@@ -89,41 +86,33 @@ const failure = `{
  * Generic error rendering.
  */
 function renderError(msg: string, corrid?: string, chatSystem?: string): string {
-    try {
-        return mustache.render(failure, {
-            corrid,
-            hasCorrelationId() {
-                return this.corrid !== undefined;
-            },
-            text: msg,
-        });
-    } catch (ex) {
-        return `Failed to render message using template: ${ex}`;
-    }
+    return mustache.render(failure, {
+        corrid,
+        hasCorrelationId() {
+            return this.corrid !== undefined;
+        },
+        text: msg,
+    });
 }
 
 const success = `{
-  "attachments": [
-    {
-      "fallback": "{{{text}}}",
-      "mrkdwn_in": ["text", "pretext"],
-      "author_name": "Successfully ran command",
-      "author_icon": "https://images.atomist.com/rug/check-circle.gif?gif={{random}}",
-      "color": "#45B254",
-      "text": "{{{text}}}"
-    }
-  ]
-}`;
+        "attachments": [
+            {
+                "fallback": "{{{text}}}",
+                "mrkdwn_in": ["text", "pretext"],
+                "author_name": "Successfully ran command",
+                "author_icon": "https://images.atomist.com/rug/check-circle.gif?gif={{random}}",
+                "color": "#45B254",
+                "text": "{{{text}}}"
+            }
+        ]
+    } `;
 
 /**
  * Generic success rendering.
  */
 function renderSuccess(msg: string, chatSystem?: string): string {
-    try {
-        return mustache.render(success, { text: msg });
-    } catch (ex) {
-        return `Failed to render message using template: ${ex}`;
-    }
+    return mustache.render(success, { text: msg });
 }
 
 export { renderIssues, renderError, renderSuccess };
