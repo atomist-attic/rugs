@@ -45,6 +45,22 @@ $ npm install -g yarn typescript tslint
 $ yarn install
 ```
 
+Development versions of the `@atomist/rugs` npm module are published to
+`https://atomist.jfrog.io/atomist/api/npm/npm-dev`. The most
+straightforward way to get these versions without making changes to
+your configuration is:
+
+```bash
+$ npm install @atomist/rugs --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
+```
+
+Alternatively, if you always want the latest snapshot, you can change
+your config for the @atomist scope:
+
+```
+npm config set @atomist:registry https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
+```
+
 ### Test
 
 Test using the standard approach for Node modules.
