@@ -1,8 +1,6 @@
 language: node_js
 node_js:
 - '6'
-before_script:
-- bash update-deps.bash
 after_deploy:
 - bash npm-publish.bash $TRAVIS_TAG rugs
 deploy:
