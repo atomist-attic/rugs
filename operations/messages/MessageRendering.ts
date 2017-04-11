@@ -20,6 +20,7 @@
 
 import { Issue } from "@atomist/cortex/Issue";
 import * as mustache from "mustache";
+import { ResponseMessage, MessageMimeTypes } from "@atomist/rug/operations/Handlers"
 
 const listIssues = `{
   "attachments": [
@@ -51,19 +52,24 @@ const listIssues = `{
 /**
  * Render GitHub issues for slack.
  */
-function renderIssues(issuesList: Issue[], chatSystem?: string): string {
+function renderIssues(issuesList: Issue[], chatSystem?: string): ResponseMessage {
     const last = "last";
-    issuesList[issuesList.length - 1][last] = true; // horrible mustache hack
+    try {
+        issuesList[issuesList.length - 1][last] = true; // horrible mustache hack
+        const msg = mustache.render(listIssues, {
+            assignee() {
+                return this.assignee !== undefined;
+            },
+            closed() {
+                return this.state === "closed";
+            },
+            issues: issuesList,
+        });
+        return new ResponseMessage(msg, MessageMimeTypes.SLACK_JSON)
+    } catch (ex) {
+        return new ResponseMessage(`Error rendering issues ${ex}`)
+    }
 
-    return mustache.render(listIssues, {
-        assignee() {
-            return this.assignee !== undefined;
-        },
-        closed() {
-            return this.state === "closed";
-        },
-        issues: issuesList,
-    });
 }
 
 const failure = `{
@@ -85,14 +91,20 @@ const failure = `{
 /**
  * Generic error rendering.
  */
-function renderError(msg: string, corrid?: string, chatSystem?: string): string {
-    return mustache.render(failure, {
-        corrid,
-        hasCorrelationId() {
-            return this.corrid !== undefined;
-        },
-        text: msg,
-    });
+function renderError(msg: string, corrid?: string, chatSystem?: string): ResponseMessage {
+    try {
+        const slack = mustache.render(failure, {
+            corrid,
+            hasCorrelationId() {
+                return this.corrid !== undefined;
+            },
+            text: msg,
+        });
+        return new ResponseMessage(slack, MessageMimeTypes.SLACK_JSON);
+    } catch (ex) {
+        return new ResponseMessage(`Error rendering error message ${ex}`)
+    }
+
 }
 
 const success = `{
@@ -111,8 +123,14 @@ const success = `{
 /**
  * Generic success rendering.
  */
-function renderSuccess(msg: string, chatSystem?: string): string {
-    return mustache.render(success, { text: msg });
+function renderSuccess(msg: string, chatSystem?: string): ResponseMessage {
+    try {
+        const slack = mustache.render(success, { text: msg });
+        return new ResponseMessage(slack, MessageMimeTypes.SLACK_JSON)
+    } catch (ex) {
+        return new ResponseMessage(`Error rendering success message ${ex}`)
+    }
+
 }
 
 export { renderIssues, renderError, renderSuccess };

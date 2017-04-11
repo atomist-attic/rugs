@@ -31,7 +31,7 @@ class GenericErrorHandler implements HandleResponse<any> {
     public handle(response: Response<any>): Plan {
         const body = response.body() != null ? "(" + response.body() + ")" : "";
         const msg = this.msg === undefined ? "" : this.msg;
-        return new Plan().add(new ResponseMessage(renderError(`${msg}${response.msg()}${body}`, this.corrid)));
+        return new Plan().add(renderError(`${msg}${response.msg()}${body}`, this.corrid));
     }
 }
 
@@ -49,7 +49,7 @@ class GenericSuccessHandler implements HandleResponse<any> {
 
     public handle(response: Response<any>): Plan {
         // TODO - render the body?
-        return new Plan().add(new ResponseMessage(renderSuccess(`${this.msg}`)));
+        return new Plan().add(renderSuccess(`${this.msg}`));
     }
 }
 
