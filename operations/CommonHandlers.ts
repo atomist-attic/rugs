@@ -15,7 +15,7 @@
  */
 
 import { Parameter, ResponseHandler, Tags } from "@atomist/rug/operations/Decorators";
-import { HandlerContext, HandleResponse, Message, Plan, Respondable, Response } from "@atomist/rug/operations/Handlers";
+import { HandlerContext, HandleResponse, ResponseMessage, Plan, Respondable, Response } from "@atomist/rug/operations/Handlers";
 import { renderError, renderSuccess } from "./messages/MessageRendering";
 
 @ResponseHandler("GenericErrorHandler", "Displays an error in chat")
@@ -31,7 +31,7 @@ class GenericErrorHandler implements HandleResponse<any> {
     public handle(response: Response<any>): Plan {
         const body = response.body() != null ? "(" + response.body() + ")" : "";
         const msg = this.msg === undefined ? "" : this.msg;
-        return new Plan().add(new Message(renderError(`${msg}${response.msg()}${body}`, this.corrid)));
+        return new Plan().add(new ResponseMessage(renderError(`${msg}${response.msg()}${body}`, this.corrid)));
     }
 }
 
@@ -49,7 +49,7 @@ class GenericSuccessHandler implements HandleResponse<any> {
 
     public handle(response: Response<any>): Plan {
         // TODO - render the body?
-        return new Plan().add(new Message(renderSuccess(`${this.msg}`)));
+        return new Plan().add(new ResponseMessage(renderSuccess(`${this.msg}`)));
     }
 }
 

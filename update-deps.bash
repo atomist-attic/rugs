@@ -18,9 +18,9 @@ function main() {
 
     if ! [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         msg "updating @atomist modules to latest development versions"
-        local registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev
+        local registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
         local module
-        for module in rug cortex; do
+        for module in cortex rug; do
             if ! npm install "@atomist/$module@latest" --save --registry="$registry"; then
                 err "Failed to install latest @atomist/$module from $registry"
                 return 1
