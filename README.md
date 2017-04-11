@@ -51,14 +51,14 @@ straightforward way to get these versions without making changes to
 your configuration is:
 
 ```bash
-$ npm install @atomist/rugs --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev
+$ npm install @atomist/rugs --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
 ```
 
 Alternatively, if you always want the latest snapshot, you can change
 your config for the @atomist scope:
 
 ```
-npm config set @atomist:registry https://atomist.jfrog.io/atomist/api/npm/npm-dev
+npm config set @atomist:registry https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
 ```
 
 ### Test
