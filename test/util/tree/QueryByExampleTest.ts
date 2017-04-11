@@ -59,6 +59,14 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
       `/Build()[@provider='${b.provider}']/repo::Repo()`)
   }
 
+  @test "node with related node but optional"() {
+    let b = new Build().withProvider("mybuild")
+      .withRepo(query.optional(new Repo()))
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@provider='${b.provider}'][/repo::Repo()]?`)
+  }
+
   @test "node with related node in array"() {
     let message = "Fixed all the bugs"
     let pr = new PullRequest().addCommits(new Commit().withMessage(message));

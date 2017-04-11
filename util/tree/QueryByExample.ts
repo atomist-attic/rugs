@@ -17,8 +17,10 @@
 import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression";
 import * as enhancer from "./Enhance";
 import { enhance }  from "./Enhance";
+import { optional }  from "./Enhance";
 
 export { enhance };
+export {optional };
 
 /**
  * Mark this object as a match that will be
@@ -165,7 +167,9 @@ function handleGraphNode(state: PathBuilderState, id: string, value: GraphNode) 
         state.markAsMatch();
     }
     const step = `/${id}::${branch.path}`;
-    state.addComplexPredicate(branch.match ? step : `[${step}]`);
+    state.addComplexPredicate(branch.match ? 
+        step : 
+        `[${step}]${enhancer.isOptional(value) ? "?" : ""}`);
 }
 
 function typeToAddress(g: any): string {
