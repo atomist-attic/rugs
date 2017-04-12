@@ -35,6 +35,14 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
       `/Build()[@provider='${b.provider}'][@status='${b.status}']`)
   }
 
+  @test "node with two ORed simple property predicates"() {
+    let b = query.enhance(new Build())
+      .or(b => b.withProvider("mybuild"), b => b.withStatus("failed"))
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[@provider='mybuild' or @status='failed']`)
+  }
+
   @test "node with related node"() {
     let b = new Build().withProvider("mybuild").withRepo(new Repo())
     let pathExpression = query.byExample(b)
@@ -42,8 +50,25 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
       `/Build()[@provider='${b.provider}'][/repo::Repo()]`)
   }
 
-  @test "node with related node and simple custom predicate"() {
+  @test "node with simple property predicate NOT"() {
     let b = query.enhance(new Build())
+      .not(b => b.withProvider("mybuild"))
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[not @provider='mybuild']`)
+  }
+
+  @test "node with NOT used twice"() {
+    let b = query.enhance<Build>(new Build())
+      .not(b => b.withProvider("mybuild"))
+      .not(b => b.withCompareUrl("froggies"))
+    let pathExpression = query.byExample(b)
+    expect(pathExpression.expression).to.equal(
+      `/Build()[not @provider='mybuild'][not @compareUrl='froggies']`)
+  }
+
+  @test "node with related node and simple custom predicate"() {
+    let b = query.enhance<Build>(new Build())
       .withProvider("mybuild").withRepo(new Repo())
       .withCustomPredicate("[@name='amy']")
     let pathExpression = query.byExample(b)
@@ -60,8 +85,9 @@ import { PathExpression } from "@atomist/rug/tree/PathExpression"
   }
 
   @test "node with related node but optional"() {
-    let b = new Build().withProvider("mybuild")
-      .withRepo(query.optional(new Repo()))
+    let b = query.enhance<Build>(new Build())
+      .withProvider("mybuild")
+      .optional(b => b.withRepo(new Repo()))
     let pathExpression = query.byExample(b)
     expect(pathExpression.expression).to.equal(
       `/Build()[@provider='${b.provider}'][/repo::Repo()]?`)
