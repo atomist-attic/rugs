@@ -1,9 +1,9 @@
 {
   "name": "@atomist/rugs",
-  "version": "0.24.2",
+  "version": "0.24.3",
   "description": "Helper functions for Rugs",
   "dependencies": {
-    "@atomist/cortex": "0.30.1",
+    "@atomist/cortex": "0.31.0",
     "@atomist/rug": "0.25.1",
     "mustache": "^2.3.0"
   },
