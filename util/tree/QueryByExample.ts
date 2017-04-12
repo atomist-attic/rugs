@@ -16,23 +16,12 @@
 
 import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression";
 import * as enhancer from "./Enhance";
+import { match }  from "./Enhance";
 import { enhance }  from "./Enhance";
+import { isFunction, isArray, isPrimitive } from "../misc/Utils"
 
 export { enhance };
-
-/**
- * Mark this object as a match that will be
- * returned as a leaf (match node)
- * @param a object to mark as a match
- */
-export function match(a) {
-    a.$match = true;
-    return a;
-}
-
-function isMatch(a) {
-    return a.$match === true;
-}
+export { match };
 
 /**
  * Create a query for this node graph, matching either the root or leaf nodes
@@ -66,7 +55,9 @@ class Branch {
     constructor(public path: string, public match: boolean) { }
 }
 
-// Internal state of query string generation
+/**
+ * Internal state of query string generation
+ */
 class PathBuilderState {
 
     private isMatch: boolean;
@@ -75,7 +66,7 @@ class PathBuilderState {
     private rootExpression: string;
 
     constructor(private root: any) {
-        this.isMatch = isMatch(root);
+        this.isMatch = enhancer.isMatch(root);
         this.rootExpression = typeToAddress(root);
     }
 
@@ -114,7 +105,6 @@ class PathBuilderState {
  */
 function queryByExampleString(g: any): Branch {
     const state = new PathBuilderState(g);
-
     for (const id in g) {
         let value: any = null;
         if (isRelevantPropertyName(id)) {
@@ -181,10 +171,6 @@ function isGraphNode(obj) {
     return obj.nodeTags && obj.nodeName;
 }
 
-function isPrimitive(obj) {
-    return ["string", "number", "boolean"].indexOf(typeof obj);
-}
-
 /**
  * Is this a property we care about? That is, it's not one of our well-known properties
  * and isn't prefixed with _, our convention for holding our internal state
@@ -193,12 +179,4 @@ function isRelevantPropertyName(id: string): boolean {
     return ["nodeTags", "nodeName"].indexOf(id) === -1 &&
         id.indexOf("_") !== 0 &&
         id.indexOf("$") !== 0;
-}
-
-function isFunction(obj) {
-    return !!(obj && obj.constructor && obj.call && obj.apply);
-}
-
-function isArray(obj) {
-    return obj.constructor === Array;
 }

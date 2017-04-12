@@ -1,6 +1,35 @@
+/*
+ * Copyright © 2017 Atomist, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import * as query from "./QueryByExample"
 import { clone } from "../misc/Utils"
+
+/**
+ * Mark this object as a match that will be
+ * returned as a leaf (match node)
+ * @param a object to mark as a match
+ */
+export function match(a) {
+    a.$match = true;
+    return a;
+}
+
+export function isMatch(a) {
+    return a.$match === true;
+}
 
 /**
  * Interface mixed into enhanced objects.
@@ -88,6 +117,12 @@ function or<T>(a: (T) => void, b: (T) => void) {
     return this;
 }
 
+/**
+ * Drop the leading type, e.g. Build() from a path expression such as
+ * Build()[@status='passed']
+ * Used to extract predicates.
+ * @param s path expression
+ */
 function dropLeadingType(s: string): string {
     return s.substring(s.indexOf("["));
 }
