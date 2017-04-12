@@ -14,121 +14,121 @@
  * limitations under the License.
  */
 
-import { suite, test, slow, timeout, skip, only } from "mocha-typescript"
+import { only, skip, slow, suite, test, timeout } from "mocha-typescript";
 
-import { expect } from "chai"
+import { expect } from "chai";
 
-import * as query from "../../../util/tree/QueryByExample"
+import * as query from "../../../util/tree/QueryByExample";
 
-import { Build } from "@atomist/cortex/stub/Build"
-import { Repo } from "@atomist/cortex/stub/Repo"
-import { PullRequest } from "@atomist/cortex/stub/PullRequest"
-import { Commit } from "@atomist/cortex/stub/Commit"
-import { Delta } from "@atomist/cortex/stub/Delta"
-import { Org } from "@atomist/cortex/stub/Org"
+import { Build } from "@atomist/cortex/stub/Build";
+import { Commit } from "@atomist/cortex/stub/Commit";
+import { Delta } from "@atomist/cortex/stub/Delta";
+import { Org } from "@atomist/cortex/stub/Org";
+import { PullRequest } from "@atomist/cortex/stub/PullRequest";
+import { Repo } from "@atomist/cortex/stub/Repo";
 
-import { PathExpression } from "@atomist/rug/tree/PathExpression"
+import { PathExpression } from "@atomist/rug/tree/PathExpression";
 
 @suite class QueryByExample {
 
-  @test "simple node"() {
-    let b = new Build
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal("/Build()")
-  }
+    @test public "simple node"() {
+        const b = new Build();
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal("/Build()");
+    }
 
-  @test "node with simple property predicate"() {
-    let b = new Build().withProvider("mybuild")
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(
-      `/Build()[@provider='${b.provider}']`)
-  }
+    @test public "node with simple property predicate"() {
+        const b = new Build().withProvider("mybuild");
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal(
+            `/Build()[@provider='${b.provider}']`);
+    }
 
-  @test "node with two simple property predicates"() {
-    let b = new Build().withProvider("mybuild").withStatus("failed")
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(
-      `/Build()[@provider='${b.provider}'][@status='${b.status}']`)
-  }
+    @test public "node with two simple property predicates"() {
+        const b = new Build().withProvider("mybuild").withStatus("failed");
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal(
+            `/Build()[@provider='${b.provider}'][@status='${b.status}']`);
+    }
 
-  @test "node with two ORed simple property predicates"() {
-    let b = query.enhance(new Build())
-      .or(b => b.withProvider("mybuild"), b => b.withStatus("failed"))
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(
-      `/Build()[@provider='mybuild' or @status='failed']`)
-  }
+    @test public "node with two ORed simple property predicates"() {
+        const b = query.enhance(new Build())
+            .or((bp) => bp.withProvider("mybuild"), (bs) => bs.withStatus("failed"));
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal(
+            `/Build()[@provider='mybuild' or @status='failed']`);
+    }
 
-  @test "node with related node"() {
-    let b = new Build().withProvider("mybuild").withRepo(new Repo())
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(
-      `/Build()[@provider='${b.provider}'][/repo::Repo()]`)
-  }
+    @test public "node with related node"() {
+        const b = new Build().withProvider("mybuild").withRepo(new Repo());
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal(
+            `/Build()[@provider='${b.provider}'][/repo::Repo()]`);
+    }
 
-  @test "node with simple property predicate NOT"() {
-    let b = query.enhance(new Build())
-      .not(b => b.withProvider("mybuild"))
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(
-      `/Build()[not @provider='mybuild']`)
-  }
+    @test public "node with simple property predicate NOT"() {
+        const b = query.enhance(new Build())
+            .not((bp) => bp.withProvider("mybuild"));
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal(
+            `/Build()[not @provider='mybuild']`);
+    }
 
-  @test "node with NOT used twice"() {
-    let b = query.enhance<Build>(new Build())
-      .not(b => b.withProvider("mybuild"))
-      .not(b => b.withCompareUrl("froggies"))
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(
-      `/Build()[not @provider='mybuild'][not @compareUrl='froggies']`)
-  }
+    @test public "node with NOT used twice"() {
+        const b = query.enhance<Build>(new Build())
+            .not((bp) => bp.withProvider("mybuild"))
+            .not((bc) => bc.withCompareUrl("froggies"));
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal(
+            `/Build()[not @provider='mybuild'][not @compareUrl='froggies']`);
+    }
 
-  @test "node with related node and simple custom predicate"() {
-    let b = query.enhance<Build>(new Build())
-      .withProvider("mybuild").withRepo(new Repo())
-      .withCustomPredicate("[@name='amy']")
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(
-      `/Build()[@provider='${b.provider}'][/repo::Repo()][@name='amy']`)
-  }
+    @test public "node with related node and simple custom predicate"() {
+        const b = query.enhance<Build>(new Build())
+            .withProvider("mybuild").withRepo(new Repo())
+            .withCustomPredicate("[@name='amy']");
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal(
+            `/Build()[@provider='${b.provider}'][/repo::Repo()][@name='amy']`);
+    }
 
-  @test "node with related node but in match"() {
-    let b = new Build().withProvider("mybuild")
-      .withRepo(query.match(new Repo()))
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(
-      `/Build()[@provider='${b.provider}']/repo::Repo()`)
-  }
+    @test public "node with related node but in match"() {
+        const b = new Build().withProvider("mybuild")
+            .withRepo(query.match(new Repo()));
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal(
+            `/Build()[@provider='${b.provider}']/repo::Repo()`);
+    }
 
-  @test "node with related node but optional"() {
-    let b = query.enhance<Build>(new Build())
-      .withProvider("mybuild")
-      .optional(b => b.withRepo(new Repo()))
-    let pathExpression = query.byExample(b)
-    expect(pathExpression.expression).to.equal(
-      `/Build()[@provider='${b.provider}'][/repo::Repo()]?`)
-  }
+    @test public "node with related node but optional"() {
+        const b = query.enhance<Build>(new Build())
+            .withProvider("mybuild")
+            .optional((br) => br.withRepo(new Repo()));
+        const pathExpression = query.byExample(b);
+        expect(pathExpression.expression).to.equal(
+            `/Build()[@provider='${b.provider}'][/repo::Repo()]?`);
+    }
 
-  @test "node with related node in array"() {
-    let message = "Fixed all the bugs"
-    let pr = new PullRequest().addCommits(new Commit().withMessage(message));
-    let pathExpression = query.byExample(pr)
-    expect(pathExpression.expression).to.equal(
-      `/PullRequest()[/commits::Commit()[@message='${message}']]`)
-  }
+    @test public "node with related node in array"() {
+        const message = "Fixed all the bugs";
+        const pr = new PullRequest().addCommits(new Commit().withMessage(message));
+        const pathExpression = query.byExample(pr);
+        expect(pathExpression.expression).to.equal(
+            `/PullRequest()[/commits::Commit()[@message='${message}']]`);
+    }
 
-  @test "handle externalized branch"() {
-    let pathExpression = query.forRoot(
-      new Commit()
-        .addDeltas(new Delta())
-        .withRepo(FleshedOutRepo)
-    )
-    expect(pathExpression.expression).to.equal(
-      `/Commit()[/deltas::Delta()][/repo::Repo()[/org::Org()]]`)
-  }
+    @test public "handle externalized branch"() {
+        const pathExpression = query.forRoot(
+            new Commit()
+                .addDeltas(new Delta())
+                .withRepo(FleshedOutRepo),
+        );
+        expect(pathExpression.expression).to.equal(
+            `/Commit()[/deltas::Delta()][/repo::Repo()[/org::Org()]]`);
+    }
 }
 
 // Example of using external function to build
 const FleshedOutRepo =
-  new Repo()
-    .withOrg(new Org());
+    new Repo()
+        .withOrg(new Org());

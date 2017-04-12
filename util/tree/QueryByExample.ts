@@ -15,10 +15,12 @@
  */
 
 import { GraphNode, PathExpression } from "@atomist/rug/tree/PathExpression";
+
+import { isArray, isFunction, isPrimitive } from "../misc/Utils";
+
 import * as enhancer from "./Enhance";
-import { match }  from "./Enhance";
-import { enhance }  from "./Enhance";
-import { isFunction, isArray, isPrimitive } from "../misc/Utils"
+import { match } from "./Enhance";
+import { enhance } from "./Enhance";
 
 export { enhance };
 export { match };
@@ -91,10 +93,10 @@ class PathBuilderState {
      */
     public branch() {
         return new Branch(
-            this.rootExpression + 
-                this.simplePredicates + 
-                this.complexPredicates + 
-                enhancer.customPredicate(this.root),
+            this.rootExpression +
+            this.simplePredicates +
+            this.complexPredicates +
+            enhancer.customPredicate(this.root),
             this.isMatch);
     }
 }
@@ -155,10 +157,7 @@ function handleGraphNode(state: PathBuilderState, id: string, value: GraphNode) 
         state.markAsMatch();
     }
     const step = `/${id}::${branch.path}`;
-    state.addComplexPredicate(branch.match ? 
-        step : 
-        `[${step}]`
-    );
+    state.addComplexPredicate(branch.match ? step : `[${step}]`);
 }
 
 function typeToAddress(g: any): string {

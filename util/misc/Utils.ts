@@ -32,15 +32,14 @@ export function isPrimitive(obj) {
 
 /**
  * Clone an object, without ES6.
- * @param a 
+ * @param a object to clone
  */
 export function clone(a): any {
-    var cloneObj = new a.constructor();
-    for (var attribut in this) {
+    const cloneObj = new a.constructor();
+    for (const attribut in this) {
         if (typeof this[attribut] === "object") {
             cloneObj[attribut] = this.clone();
-        } 
-        else {
+        } else {
             cloneObj[attribut] = this[attribut];
         }
     }

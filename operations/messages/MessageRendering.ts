@@ -18,9 +18,10 @@
 // rendering style for the message based on some context
 // (MappedParameter, PE etc)
 
-import { Issue } from "@atomist/cortex/Issue";
 import * as mustache from "mustache";
-import { ResponseMessage, MessageMimeTypes } from "@atomist/rug/operations/Handlers"
+
+import { Issue } from "@atomist/cortex/Issue";
+import { MessageMimeTypes, ResponseMessage } from "@atomist/rug/operations/Handlers";
 
 const listIssues = `{
   "attachments": [
@@ -65,9 +66,9 @@ function renderIssues(issuesList: Issue[], chatSystem?: string): ResponseMessage
             },
             issues: issuesList,
         });
-        return new ResponseMessage(msg, MessageMimeTypes.SLACK_JSON)
+        return new ResponseMessage(msg, MessageMimeTypes.SLACK_JSON);
     } catch (ex) {
-        return new ResponseMessage(`Error rendering issues ${ex}`)
+        return new ResponseMessage(`Error rendering issues ${ex}`);
     }
 
 }
@@ -102,7 +103,7 @@ function renderError(msg: string, corrid?: string, chatSystem?: string): Respons
         });
         return new ResponseMessage(slack, MessageMimeTypes.SLACK_JSON);
     } catch (ex) {
-        return new ResponseMessage(`Error rendering error message ${ex}`)
+        return new ResponseMessage(`Error rendering error message ${ex}`);
     }
 
 }
@@ -126,9 +127,9 @@ const success = `{
 function renderSuccess(msg: string, chatSystem?: string): ResponseMessage {
     try {
         const slack = mustache.render(success, { text: msg });
-        return new ResponseMessage(slack, MessageMimeTypes.SLACK_JSON)
+        return new ResponseMessage(slack, MessageMimeTypes.SLACK_JSON);
     } catch (ex) {
-        return new ResponseMessage(`Error rendering success message ${ex}`)
+        return new ResponseMessage(`Error rendering success message ${ex}`);
     }
 
 }

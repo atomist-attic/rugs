@@ -15,7 +15,14 @@
  */
 
 import { Parameter, ResponseHandler, Tags } from "@atomist/rug/operations/Decorators";
-import { HandlerContext, HandleResponse, ResponseMessage, Plan, Respondable, Response } from "@atomist/rug/operations/Handlers";
+import {
+    HandlerContext,
+    HandleResponse,
+    Plan,
+    Respondable,
+    Response,
+    ResponseMessage,
+} from "@atomist/rug/operations/Handlers";
 import { renderError, renderSuccess } from "./messages/MessageRendering";
 
 @ResponseHandler("GenericErrorHandler", "Displays an error in chat")
