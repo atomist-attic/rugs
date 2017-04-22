@@ -15,7 +15,7 @@
  */
 
 import { Project } from "@atomist/rug/model/Project";
-import { Edit, Execute, HandleCommand, Instruction, Respondable } from "@atomist/rug/operations/Handlers";
+import { Edit, Execute, HandleCommand, Instruction } from "@atomist/rug/operations/Handlers";
 import { EditProject, ProjectEditor } from "@atomist/rug/operations/ProjectEditor";
 
 /**
@@ -58,6 +58,6 @@ function instruction(op, kind) {
  * @param name Rug Function to call
  * @param params any params, if any
  */
-export function execute(name: string, params?: any): Respondable<Execute> {
+export function execute(name: string, params?: any) {
     return { instruction: { kind: "execute", name, parameters: params } };
 }

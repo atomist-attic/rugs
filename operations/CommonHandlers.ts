@@ -18,12 +18,14 @@ import { Parameter, ResponseHandler, Tags } from "@atomist/rug/operations/Decora
 import {
     HandlerContext,
     HandleResponse,
-    Plan,
-    Respondable,
-    Response,
+    Plan, CommandPlan, EventPlan,
+    CommandRespondable, EventRespondable, Response,
     ResponseMessage,
 } from "@atomist/rug/operations/Handlers";
 import { renderError, renderSuccess } from "./messages/MessageRendering";
+
+// TODO this is nasty
+type Respondable<T> = CommandRespondable<any> | EventRespondable<any>
 
 @ResponseHandler("GenericErrorHandler", "Displays an error in chat")
 @Tags("errors")
@@ -35,10 +37,10 @@ class GenericErrorHandler implements HandleResponse<any> {
     @Parameter({ description: "Correlation ID", pattern: "@any", required: false })
     public corrid: string;
 
-    public handle(response: Response<any>): Plan {
+    public handle(response: Response<any>) {
         const body = response.body != null ? "(" + response.body + ")" : "";
         const msg = this.msg === undefined ? "" : this.msg;
-        return new Plan().add(renderError(`${msg}${response.msg}${body}`, this.corrid));
+        return new CommandPlan().add(renderError(`${msg}${response.msg}${body}`, this.corrid));
     }
 }
 
@@ -56,7 +58,7 @@ class GenericSuccessHandler implements HandleResponse<any> {
 
     public handle(response: Response<any>): Plan {
         // TODO - render the body?
-        return new Plan().add(renderSuccess(`${this.msg}`));
+        return new CommandPlan().add(renderSuccess(`${this.msg}`));
     }
 }
 
