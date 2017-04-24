@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/atomist/rugs/compare/0.24.3...HEAD
+[Unreleased]: https://github.com/atomist/rugs/compare/0.24.4...HEAD
+
+## [0.24.4] - 2017-04-24
+
+[0.24.4]: https://github.com/atomist/rugs/compare/0.24.3...0.24.4
+
+Newer rug release
 
 ### Added
 
 -   Change log
+
+### Changed
+
+-   Updated Rug to 0.26.0
 
 ## [0.24.3] - 2017-04-12
 

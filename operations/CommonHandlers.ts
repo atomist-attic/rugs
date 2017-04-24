@@ -18,8 +18,8 @@ import { Parameter, ResponseHandler, Tags } from "@atomist/rug/operations/Decora
 import {
     HandlerContext,
     HandleResponse,
-    Plan,
-    Respondable,
+    CommandPlan,
+    CommandRespondable,
     Response,
     ResponseMessage,
 } from "@atomist/rug/operations/Handlers";
@@ -35,14 +35,14 @@ class GenericErrorHandler implements HandleResponse<any> {
     @Parameter({ description: "Correlation ID", pattern: "@any", required: false })
     public corrid: string;
 
-    public handle(response: Response<any>): Plan {
+    public handle(response: Response<any>): CommandPlan {
         const body = response.body != null ? "(" + response.body + ")" : "";
         const msg = this.msg === undefined ? "" : this.msg;
-        return new Plan().add(renderError(`${msg}${response.msg}${body}`, this.corrid));
+        return new CommandPlan().add(renderError(`${msg}${response.msg}${body}`, this.corrid));
     }
 }
 
-export function handleErrors(res: Respondable<any>, params?: any): Respondable<any> {
+export function handleErrors(res: CommandRespondable<any>, params?: any): CommandRespondable<any> {
     res.onError = { kind: "respond", name: "GenericErrorHandler", parameters: params };
     return res;
 }
@@ -54,13 +54,13 @@ class GenericSuccessHandler implements HandleResponse<any> {
     @Parameter({ description: "Success msg", pattern: "@any" })
     public msg: string;
 
-    public handle(response: Response<any>): Plan {
+    public handle(response: Response<any>): CommandPlan {
         // TODO - render the body?
-        return new Plan().add(renderSuccess(`${this.msg}`));
+        return new CommandPlan().add(renderSuccess(`${this.msg}`));
     }
 }
 
-export function handleSuccess(res: Respondable<any>, msg: string): Respondable<any> {
+export function handleSuccess(res: CommandRespondable<any>, msg: string): CommandRespondable<any> {
     res.onSuccess = { kind: "respond", name: "GenericSuccessHandler", parameters: { msg } };
     return res;
 }
@@ -68,7 +68,7 @@ export function handleSuccess(res: Respondable<any>, msg: string): Respondable<a
 /**
  * Wrap with error and/or success handlers.
  */
-export function wrap(res: Respondable<any>, success: string, params?: any): Respondable<any> {
+export function wrap(res: CommandRespondable<any>, success: string, params?: any): CommandRespondable<any> {
     const withErrors = handleErrors(res, params);
     return handleSuccess(withErrors, success);
 }
