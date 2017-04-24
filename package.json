@@ -1,10 +1,10 @@
 {
   "name": "@atomist/rugs",
-  "version": "0.24.4",
+  "version": "0.25.0",
   "description": "Helper functions for Rugs",
   "dependencies": {
-    "@atomist/cortex": "0.31.0",
-    "@atomist/rug": "0.26.0",
+    "@atomist/cortex": "0.33.0",
+    "@atomist/rug": "0.26.1",
     "mustache": "^2.3.0"
   },
   "scripts": {
@@ -29,7 +29,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "typescript": "2.2.1",
+    "typescript": "2.2.2",
     "mocha-typescript": "^1.0.23",
     "@types/mustache": "^0.8.29"
   }
