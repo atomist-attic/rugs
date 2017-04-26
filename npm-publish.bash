@@ -3,7 +3,7 @@
 set -o pipefail
 
 declare Pkg=npm-publish
-declare Version=0.2.0
+declare Version=0.3.0
 
 function msg() {
     echo "$Pkg: $*"
@@ -14,7 +14,6 @@ function err() {
 }
 
 function main() {
-    msg "branch is $TRAVIS_BRANCH"
     local module_version=$1
     if [[ ! $module_version ]]; then
         err "first parameter must be the version number of the module to publish"
@@ -24,7 +23,7 @@ function main() {
 
     local package="package.json"
     local tmp_package="$package.tmp"
-    if ! jq --arg tag "$TRAVIS_TAG" '.version = $tag' "$package" > "$tmp_package"; then
+    if ! jq --arg tag "$module_version" '.version = $tag' "$package" > "$tmp_package"; then
         err "failed to set version in $package"
         return 1
     fi
@@ -36,21 +35,19 @@ function main() {
      # npm honors this
     rm -f "$target/.gitignore"
 
-    if [[ $module_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        if [[ $NPM_TOKEN ]]; then
-            msg "creating local .npmrc using NPM token from environment"
-            if ! ( umask 077 && echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc" ); then
-                err "failed to create $HOME/.npmrc"
-                return 1
-            fi
-        else
-            msg "assuming your .npmrc is setup correctly for this project"
-        fi
-        if ! ( cd "$target" && npm publish --access=public $registry ); then
-            err "failed to publish node module to artifactory"
-            cat "$target/npm-debug.log"
+    if [[ $NPM_TOKEN ]]; then
+        msg "creating local .npmrc using NPM token from environment"
+        if ! ( umask 077 && echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc" ); then
+            err "failed to create $HOME/.npmrc"
             return 1
         fi
+    else
+        msg "assuming your .npmrc is setup correctly for this project"
+    fi
+    if ! ( cd "$target" && npm publish --access=public $registry ); then
+        err "failed to publish node module to artifactory"
+        cat "$target/npm-debug.log"
+        return 1
     fi
 }
 

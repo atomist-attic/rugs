@@ -1,10 +1,10 @@
 {
   "name": "@atomist/rugs",
-  "version": "0.25.0",
+  "version": "1.0.0-m.1",
   "description": "Helper functions for Rugs",
   "dependencies": {
-    "@atomist/cortex": "0.33.0",
-    "@atomist/rug": "0.26.1",
+    "@atomist/cortex": "1.0.0-m.1",
+    "@atomist/rug": "1.0.0-m.1",
     "mustache": "^2.3.0"
   },
   "scripts": {
