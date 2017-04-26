@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/rugs/compare/1.0.0-m.1...HEAD
 
+### Changed
+
+-   Use build script so successful builds get tagged
+
+### Fixed
+
+-   Properly lint all TypeScript source files
+
 ## [1.0.0-m.1] - 2017-04-26
 
 [1.0.0-m.1]: https://github.com/atomist/rugs/compare/0.24.4...1.0.0-m.1

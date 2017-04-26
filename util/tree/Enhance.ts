@@ -135,9 +135,13 @@ function dropLeadingType(s: string): string {
  */
 export function enhance<T>(node): EnhancedReturn<T> {
     // Manually mix in the methods from the Enhanced interface
-    node["optional"] = optional;
-    node["withCustomPredicate"] = withCustomPredicate;
-    node["not"] = not;
-    node["or"] = or;
+    const optKey = "optional";
+    node[optKey] = optional;
+    const withKey = "withCustomPredicate";
+    node[withKey] = withCustomPredicate;
+    const notKey = "not";
+    node[notKey] = not;
+    const orKey = "or";
+    node[orKey] = or;
     return node;
 }

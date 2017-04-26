@@ -107,6 +107,7 @@ class PathBuilderState {
  */
 function queryByExampleString(g: any): Branch {
     const state = new PathBuilderState(g);
+    // tslint:disable-next-line:forin
     for (const id in g) {
         let value: any = null;
         if (isRelevantPropertyName(id)) {
