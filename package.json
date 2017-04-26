@@ -3,11 +3,12 @@
   "version": "1.0.0-m.1",
   "description": "Helper functions for Rugs",
   "dependencies": {
-    "@atomist/cortex": "1.0.0-m.1",
-    "@atomist/rug": "1.0.0-m.1",
+    "@atomist/cortex": "1.0.0-m.2",
+    "@atomist/rug": "1.0.0-m.2",
     "mustache": "^2.3.0"
   },
   "scripts": {
+    "preinstall": "tslint **/*.ts",
     "test": "tsc -p . && mocha test --recursive",
     "dev-test-watch": "mocha-typescript-watch",
     "prepublish": "tsc -p ."
@@ -31,6 +32,8 @@
     "mocha": "^3.2.0",
     "typescript": "2.2.2",
     "mocha-typescript": "^1.0.23",
+    "@types/chai": "^3.5.1",
+    "@types/mocha": "^2.2.41",
     "@types/mustache": "^0.8.29"
   }
 }

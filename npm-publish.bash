@@ -21,10 +21,10 @@ function main() {
     fi
     shift
 
-    local package="package.json"
-    local tmp_package="$package.tmp"
+    local package=package.json
+    local tmp_package=$package.tmp
     if ! jq --arg tag "$module_version" '.version = $tag' "$package" > "$tmp_package"; then
-        err "failed to set version in $package"
+        err "failed to set version $module_version in $package"
         return 1
     fi
     if ! mv "$tmp_package" "$package"; then
@@ -33,7 +33,7 @@ function main() {
     fi
 
      # npm honors this
-    rm -f "$target/.gitignore"
+    rm -f .gitignore
 
     if [[ $NPM_TOKEN ]]; then
         msg "creating local .npmrc using NPM token from environment"
@@ -44,9 +44,9 @@ function main() {
     else
         msg "assuming your .npmrc is setup correctly for this project"
     fi
-    if ! ( cd "$target" && npm publish --access=public $registry ); then
-        err "failed to publish node module to artifactory"
-        cat "$target/npm-debug.log"
+    if ! npm publish --access=public; then
+        err "failed to publish node module"
+        cat npm-debug.log
         return 1
     fi
 }

@@ -42,7 +42,7 @@ which installs `npm`, and [TypeScript][ts] installed.
 
 ```
 $ npm install -g yarn typescript tslint
-$ yarn install
+$ yarn
 ```
 
 ### Test

@@ -24,7 +24,7 @@ import { GraphNode, Match } from "@atomist/rug/tree/PathExpression";
 export abstract class RootHandler<R extends GraphNode> implements HandleEvent<R, R> {
 
     public handle(m: Match<R, R>): Plan {
-        return this.onMatch(m.root());
+        return this.onMatch(m.root);
     }
 
     /**

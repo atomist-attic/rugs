@@ -17,7 +17,7 @@ Initial milestone 1 release
 
 ### Changed
 
--   Updated @atomist/rug and @atomist/cortex dependencies to 1.0.0-m.1
+-   Updated @atomist/rug and @atomist/cortex dependencies to 1.0.0-m.2
 
 ## [0.24.4] - 2017-04-24
 

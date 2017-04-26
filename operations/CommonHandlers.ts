@@ -16,10 +16,10 @@
 
 import { Parameter, ResponseHandler, Tags } from "@atomist/rug/operations/Decorators";
 import {
-    HandlerContext,
-    HandleResponse,
     CommandPlan,
     CommandRespondable,
+    HandlerContext,
+    HandleResponse,
     Response,
     ResponseMessage,
 } from "@atomist/rug/operations/Handlers";

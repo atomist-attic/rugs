@@ -15,7 +15,7 @@
  */
 
 import { Project } from "@atomist/rug/model/Project";
-import { Edit, Execute, HandleCommand, Instruction, CommandRespondable } from "@atomist/rug/operations/Handlers";
+import { CommandRespondable, Edit, Execute, HandleCommand, Instruction } from "@atomist/rug/operations/Handlers";
 import { EditProject, ProjectEditor } from "@atomist/rug/operations/ProjectEditor";
 
 /**
