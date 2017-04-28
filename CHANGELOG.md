@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/atomist/rugs/compare/1.0.0-m.1...HEAD
+[Unreleased]: https://github.com/atomist/rugs/compare/1.0.0-m.2...HEAD
+
+## [1.0.0-m.2] - 2017-04-27
+
+[1.0.0-m.2]: https://github.com/atomist/rugs/compare/1.0.0-m.1...1.0.0-m.2
+
+Milestone 2 release
 
 ### Changed
 
@@ -15,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+-   Removed circular references between Enhance.ts and QueryByExample.ts
 -   Properly lint all TypeScript source files
 
 ## [1.0.0-m.1] - 2017-04-26
