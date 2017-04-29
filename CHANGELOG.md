@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/rugs/compare/1.0.0-m.2...HEAD
 
+### Fixed
+
+-   Correct erroneous postinstall script [#12][12]
+
+[12]: https://github.com/atomist/rugs/issues/12
+
 ## [1.0.0-m.2] - 2017-04-27
 
 [1.0.0-m.2]: https://github.com/atomist/rugs/compare/1.0.0-m.1...1.0.0-m.2

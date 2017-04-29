@@ -8,10 +8,9 @@
     "mustache": "^2.3.0"
   },
   "scripts": {
-    "postinstall": "tslint '**/*.ts' --exclude 'node_modules/**'",
     "test": "tsc -p . && mocha test --recursive",
     "dev-test-watch": "mocha-typescript-watch",
-    "prepublish": "tsc -p ."
+    "prepublish": "tslint '**/*.ts' --exclude 'node_modules/**' && tsc -p ."
   },
   "repository": {
     "type": "git",
