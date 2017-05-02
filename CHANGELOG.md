@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/rugs/compare/1.0.0-m.3...HEAD
 
+### Fixed
+
+-   Ensure parameters to error/success helper functions are maps
+    https://github.com/atomist/rugs/issues/11
+
 ## [1.0.0-m.3] - 2017-04-29
 
 [1.0.0-m.3]: https://github.com/atomist/rugs/compare/1.0.0-m.2...1.0.0-m.3

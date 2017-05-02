@@ -42,7 +42,7 @@ class GenericErrorHandler implements HandleResponse<any> {
     }
 }
 
-export function handleErrors(res: CommandRespondable<any>, params?: any): CommandRespondable<any> {
+export function handleErrors(res: CommandRespondable<any>, params?: {}): CommandRespondable<any> {
     res.onError = { kind: "respond", name: "GenericErrorHandler", parameters: params };
     return res;
 }
@@ -68,7 +68,7 @@ export function handleSuccess(res: CommandRespondable<any>, msg: string): Comman
 /**
  * Wrap with error and/or success handlers.
  */
-export function wrap(res: CommandRespondable<any>, success: string, params?: any): CommandRespondable<any> {
+export function wrap(res: CommandRespondable<any>, success: string, params?: {}): CommandRespondable<any> {
     const withErrors = handleErrors(res, params);
     return handleSuccess(withErrors, success);
 }
