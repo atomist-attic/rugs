@@ -27,7 +27,7 @@ const listIssues = `{
   "attachments": [
     {{#issues}}
     {
-      "fallback": "#{{number}}: {{{title}}}",
+      "fallback": "#{{number}}: {{{safeTitle}}}",
       {{#closed}}
       "footer_icon": "http://images.atomist.com/rug/issue-closed.png",
       "color": "#bd2c00",
@@ -42,7 +42,7 @@ const listIssues = `{
       "author_icon": "{{{assignee.avatar_url}}}",
       {{/assignee}}
       "mrkdwn_in": ["text"],
-      "text": "<{{{issueUrl}}}|#{{number}}: {{{title}}}>",
+      "text": "<{{{issueUrl}}}|#{{number}}: {{{safeTitle}}}>",
       "footer": "<{{{url}}}|{{{repo}}}>",
       "ts": "{{ts}}"
     }{{^last}}, {{/last}}
@@ -63,6 +63,9 @@ function renderIssues(issuesList: Issue[], chatSystem?: string): ResponseMessage
             },
             closed() {
                 return this.state === "closed";
+            },
+            safeTitle() {
+                return JSON.stringify(this.title);
             },
             issues: issuesList,
         });
