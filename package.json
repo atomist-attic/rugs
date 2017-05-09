@@ -4,7 +4,7 @@
   "description": "Helper functions for Rugs",
   "dependencies": {
     "@atomist/cortex": "1.0.0-m.2",
-    "@atomist/rug": "1.0.0-m.2",
+    "@atomist/rug": "1.0.0-m.3",
     "mustache": "^2.3.0"
   },
   "scripts": {
