@@ -1,3 +1,9 @@
+import { Issue } from "@atomist/cortex/Issue";
+import { MessageMimeTypes, ResponseMessage } from "@atomist/rug/operations/Handlers";
+import { renderError, renderSuccess } from "@atomist/slack-messages/RugMessages";
+import deprecated from "deprecated-decorator";
+import * as mustache from "mustache";
+
 /*
  * Copyright © 2017 Atomist, Inc.
  *
@@ -17,11 +23,6 @@
 // NOTE: plan is that this file can act as a facade for selecting
 // rendering style for the message based on some context
 // (MappedParameter, PE etc)
-
-import * as mustache from "mustache";
-
-import { Issue } from "@atomist/cortex/Issue";
-import { MessageMimeTypes, ResponseMessage } from "@atomist/rug/operations/Handlers";
 
 const listIssues = `{
   "attachments": [
@@ -53,88 +54,31 @@ const listIssues = `{
 /**
  * Render GitHub issues for slack.
  */
-function renderIssues(issuesList: Issue[], chatSystem?: string): ResponseMessage {
-    const last = "last";
-    try {
-        issuesList[issuesList.length - 1][last] = true; // horrible mustache hack
-        const msg = mustache.render(listIssues, {
-            assignee() {
-                return this.assignee !== undefined;
-            },
-            closed() {
-                return this.state === "closed";
-            },
-            safeTitle() {
-                return JSON.stringify(this.title);
-            },
-            issues: issuesList,
-        });
-        return new ResponseMessage(msg, MessageMimeTypes.SLACK_JSON);
-    } catch (ex) {
-        return new ResponseMessage(`Error rendering issues ${ex}`);
-    }
+const renderIssues = deprecated({
+    alternative: "@atomist/slack-messages",
+    version: "1.0.0-m.5",
+},
+    function renderIssues(issuesList: Issue[], chatSystem?: string): ResponseMessage {
+        const last = "last";
+        try {
+            issuesList[issuesList.length - 1][last] = true; // horrible mustache hack
+            const msg = mustache.render(listIssues, {
+                assignee() {
+                    return this.assignee !== undefined;
+                },
+                closed() {
+                    return this.state === "closed";
+                },
+                safeTitle() {
+                    return JSON.stringify(this.title);
+                },
+                issues: issuesList,
+            });
+            return new ResponseMessage(msg, MessageMimeTypes.SLACK_JSON);
+        } catch (ex) {
+            return new ResponseMessage(`Error rendering issues ${ex}`);
+        }
 
-}
-
-const failure = `{
-  "attachments": [
-    {
-      "fallback": "Unable to run command",
-      "mrkdwn_in": ["text", "pretext"],
-      "author_name": "Unable to run command",
-      "author_icon": "https://images.atomist.com/rug/error-circle.png",
-      {{#hasCorrelationId}}
-      "footer": "Correlation ID: {{{corrid}}}",
-      {{/hasCorrelationId}}
-      "color": "#D94649",
-      "text" : "{{{text}}}"
-    }
-  ]
-}`;
-
-/**
- * Generic error rendering.
- */
-function renderError(msg: string, corrid?: string, chatSystem?: string): ResponseMessage {
-    try {
-        const slack = mustache.render(failure, {
-            corrid,
-            hasCorrelationId() {
-                return this.corrid !== undefined;
-            },
-            text: msg,
-        });
-        return new ResponseMessage(slack, MessageMimeTypes.SLACK_JSON);
-    } catch (ex) {
-        return new ResponseMessage(`Error rendering error message ${ex}`);
-    }
-
-}
-
-const success = `{
-        "attachments": [
-            {
-                "fallback": "{{{text}}}",
-                "mrkdwn_in": ["text", "pretext"],
-                "author_name": "Successfully ran command",
-                "author_icon": "https://images.atomist.com/rug/check-circle.gif?gif={{random}}",
-                "color": "#45B254",
-                "text": "{{{text}}}"
-            }
-        ]
-    } `;
-
-/**
- * Generic success rendering.
- */
-function renderSuccess(msg: string, chatSystem?: string): ResponseMessage {
-    try {
-        const slack = mustache.render(success, { text: msg });
-        return new ResponseMessage(slack, MessageMimeTypes.SLACK_JSON);
-    } catch (ex) {
-        return new ResponseMessage(`Error rendering success message ${ex}`);
-    }
-
-}
+    });
 
 export { renderIssues, renderError, renderSuccess };

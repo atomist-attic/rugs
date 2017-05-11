@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/rugs/compare/1.0.0-m.4...HEAD
 
+### Changed
+
+-   `operations/messages/MessageRendering` is now deprecated.  Please switch to
+    using `@atomist/slack-messages` module
+
 ## [1.0.0-m.4] - 2017-05-09
 
 [1.0.0-m.4]: https://github.com/atomist/rugs/compare/1.0.0-m.3...1.0.0-m.4
