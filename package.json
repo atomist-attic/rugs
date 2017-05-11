@@ -5,10 +5,13 @@
   "dependencies": {
     "@atomist/cortex": "1.0.0-m.3",
     "@atomist/rug": "1.0.0-m.3",
+    "@atomist/slack-messages": "^0.4.0",
+    "deprecated-decorator": "^0.1.6",
     "mustache": "^2.3.0"
   },
   "scripts": {
     "test": "tsc -p . && mocha test --recursive",
+    "autotest": "supervisor -q -n exit -x ./node_modules/.bin/mocha -- --recursive",
     "dev-test-watch": "mocha-typescript-watch",
     "prepublish": "tslint '**/*.ts' --exclude 'node_modules/**' && tsc -p ."
   },
@@ -29,6 +32,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
+    "supervisor": "^0.12.0",
     "typescript": "2.2.2",
     "tslint": "^5.1.0",
     "mocha-typescript": "^1.0.23",

@@ -2,15 +2,21 @@
 # yarn lockfile v1
 
 
-"@atomist/cortex@1.0.0-m.2":
-  version "1.0.0-m.2"
-  resolved "https://registry.yarnpkg.com/@atomist/cortex/-/cortex-1.0.0-m.2.tgz#b9432c3e72f198227af02fc11448798cb4a1a372"
+"@atomist/cortex@1.0.0-m.3":
+  version "1.0.0-m.3"
+  resolved "https://registry.yarnpkg.com/@atomist/cortex/-/cortex-1.0.0-m.3.tgz#88c32585ec819541932246d24c02ba6b70878512"
   dependencies:
-    "@atomist/rug" "1.0.0-m.2"
+    "@atomist/rug" "1.0.0-m.3"
 
-"@atomist/rug@1.0.0-m.2":
-  version "1.0.0-m.2"
-  resolved "https://registry.yarnpkg.com/@atomist/rug/-/rug-1.0.0-m.2.tgz#06d14cfe09d66023b6f69aad381fe8ece96b6faa"
+"@atomist/rug@1.0.0-m.3", "@atomist/rug@^1.0.0-m.3":
+  version "1.0.0-m.3"
+  resolved "https://registry.yarnpkg.com/@atomist/rug/-/rug-1.0.0-m.3.tgz#5768338bd1e20a6138b1ed0db38e3c881206c867"
+
+"@atomist/slack-messages@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@atomist/slack-messages/-/slack-messages-0.4.0.tgz#9552ca2718ed9a7876b7336e4ea17b1cd112c9df"
+  dependencies:
+    "@atomist/rug" "^1.0.0-m.3"
 
 "@types/chai@^3.5.1":
   version "3.5.1"
@@ -126,6 +132,10 @@ deep-eql@^0.1.3:
   resolved "https://registry.yarnpkg.com/deep-eql/-/deep-eql-0.1.3.tgz#ef558acab8de25206cd713906d74e56930eb69f2"
   dependencies:
     type-detect "0.1.1"
+
+deprecated-decorator@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/deprecated-decorator/-/deprecated-decorator-0.1.6.tgz#00966317b7a12fe92f3cc831f7583af329b86c37"
 
 diff@3.2.0, diff@^3.2.0:
   version "3.2.0"

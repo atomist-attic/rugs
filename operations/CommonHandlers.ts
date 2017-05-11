@@ -1,3 +1,5 @@
+import { Parameter, ResponseHandler, Tags } from "@atomist/rug/operations/Decorators";
+import { renderError, renderSuccess } from "@atomist/slack-messages/RugMessages";
 /*
  * Copyright © 2017 Atomist, Inc.
  *
@@ -14,7 +16,6 @@
  * limitations under the License.
  */
 
-import { Parameter, ResponseHandler, Tags } from "@atomist/rug/operations/Decorators";
 import {
     CommandPlan,
     CommandRespondable,
@@ -23,7 +24,6 @@ import {
     Response,
     ResponseMessage,
 } from "@atomist/rug/operations/Handlers";
-import { renderError, renderSuccess } from "./messages/MessageRendering";
 
 @ResponseHandler("GenericErrorHandler", "Displays an error in chat")
 @Tags("errors")
