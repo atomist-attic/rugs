@@ -12,9 +12,9 @@
   version "1.0.0-m.3"
   resolved "https://registry.yarnpkg.com/@atomist/rug/-/rug-1.0.0-m.3.tgz#5768338bd1e20a6138b1ed0db38e3c881206c867"
 
-"@atomist/slack-messages@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@atomist/slack-messages/-/slack-messages-0.4.0.tgz#9552ca2718ed9a7876b7336e4ea17b1cd112c9df"
+"@atomist/slack-messages@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@atomist/slack-messages/-/slack-messages-0.5.1.tgz#b9fd4c7e2c976bede245ab92ff8a0f390ab10848"
   dependencies:
     "@atomist/rug" "^1.0.0-m.3"
 
@@ -520,6 +520,10 @@ strip-bom@^2.0.0:
   resolved "https://registry.yarnpkg.com/strip-bom/-/strip-bom-2.0.0.tgz#6219a85616520491f35788bdbf1447a99c7e6b0e"
   dependencies:
     is-utf8 "^0.2.0"
+
+supervisor@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/supervisor/-/supervisor-0.12.0.tgz#de7e6337015b291851c10f3538c4a7f04917ecc1"
 
 supports-color@3.1.2:
   version "3.1.2"

@@ -5,7 +5,7 @@
   "dependencies": {
     "@atomist/cortex": "1.0.0-m.3",
     "@atomist/rug": "1.0.0-m.3",
-    "@atomist/slack-messages": "^0.4.0",
+    "@atomist/slack-messages": "^0.5.1",
     "deprecated-decorator": "^0.1.6",
     "mustache": "^2.3.0"
   },
@@ -30,14 +30,14 @@
   },
   "homepage": "https://github.com/atomist/rugs#readme",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0",
-    "supervisor": "^0.12.0",
-    "typescript": "2.2.2",
-    "tslint": "^5.1.0",
-    "mocha-typescript": "^1.0.23",
     "@types/chai": "^3.5.1",
     "@types/mocha": "^2.2.41",
-    "@types/mustache": "^0.8.29"
+    "@types/mustache": "^0.8.29",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "mocha-typescript": "^1.0.23",
+    "supervisor": "^0.12.0",
+    "tslint": "^5.1.0",
+    "typescript": "2.2.2"
   }
 }
