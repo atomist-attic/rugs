@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+-   Uptake `rug` and `cortex` 1.0.0-m.4 and remove references to ProjectEditor
 -   `operations/messages/MessageRendering` is now deprecated.  Please switch to
     using `@atomist/slack-messages` module
 

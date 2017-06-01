@@ -16,7 +16,7 @@
 
 import { Project } from "@atomist/rug/model/Project";
 import { CommandRespondable, Edit, Execute, HandleCommand, Instruction } from "@atomist/rug/operations/Handlers";
-import { EditProject, ProjectEditor } from "@atomist/rug/operations/ProjectEditor";
+import { EditProject } from "@atomist/rug/operations/ProjectEditor";
 
 /**
  * Build a plan instruction for the given decorated
@@ -25,7 +25,7 @@ import { EditProject, ProjectEditor } from "@atomist/rug/operations/ProjectEdito
  * @param p project or name of project to edit
  * @param ed editor to use
  */
-export function editWith(p: Project | string, ed: EditProject | ProjectEditor): Edit {
+export function editWith(p: Project | string, ed: EditProject): Edit {
     const obj = instruction(ed, "edit");
     const proj = p as any;
     const projectKey = "project";

@@ -16,7 +16,7 @@
 
 import { Project, Xml } from "@atomist/rug/model/Core";
 import { Editor, Parameter, Tags } from "@atomist/rug/operations/Decorators";
-import { EditProject, ProjectEditor } from "@atomist/rug/operations/ProjectEditor";
+import { EditProject } from "@atomist/rug/operations/ProjectEditor";
 import { Pattern, RugOperation } from "@atomist/rug/operations/RugOperation";
 import { PathExpression, PathExpressionEngine, TextTreeNode } from "@atomist/rug/tree/PathExpression";
 
