@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/rugs/compare/1.0.0-m.4...HEAD
 
+### Added
+
+-   Added support for Response Handler chain generation for Command
+    Handlers
+
 ### Changed
 
 -   Uptake `rug` and `cortex` 1.0.0-m.4 and remove references to ProjectEditor
