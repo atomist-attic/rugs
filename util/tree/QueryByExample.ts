@@ -47,6 +47,7 @@ export function forRoot<R extends GraphNode>(g: any): PathExpression<R, R> {
  * or as a predicate.
  */
 class Branch {
+    // tslint:disable-next-line:no-shadowed-variable
     constructor(public path: string, public match: boolean) { }
 }
 

@@ -58,7 +58,7 @@ const renderIssues = deprecated({
     alternative: "@atomist/slack-messages",
     version: "1.0.0-m.5",
 },
-    function renderIssues(issuesList: Issue[], chatSystem?: string): ResponseMessage {
+    function oldRenderIssues(issuesList: Issue[], chatSystem?: string): ResponseMessage {
         const last = "last";
         try {
             issuesList[issuesList.length - 1][last] = true; // horrible mustache hack
