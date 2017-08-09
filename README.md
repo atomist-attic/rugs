@@ -1,7 +1,6 @@
 # Atomist 'rugs'
 
 [![Build Status](https://travis-ci.org/atomist/rugs.svg?branch=master)](https://travis-ci.org/atomist/rugs)
-[![Slack Status](https://join.atomist.com/badge.svg)](https://join.atomist.com/)
 
 [Node][node] module [`@atomist/rugs`][rugs] that brings in all the
 dependencies and helpers you need to write Rugs
