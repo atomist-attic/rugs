@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/atomist/rugs/compare/1.0.0-m.6...HEAD
+[Unreleased]: https://github.com/atomist/rugs/compare/1.0.0-m.7...HEAD
+
+## [1.0.0-m.7 - 2017-08-24
+
+[1.0.0-m.7]: https://github.com/atomist/rugs/compare/1.0.0-m.6...1.0.0-m.7
+
+1.0.0 milestone 7 release
+
+### Changed
+
+-   Update to rug-1.0.0-m.7 and cortex-1.0.0-m.6
 
 ## [1.0.0-m.6] - 2017-07-11
 
@@ -17,7 +27,7 @@ July rug rev release
 
 ### Changed
 
--   Uptake `rug` and `cortex` 1.0.0-m.5
+-   Update `rug` and `cortex` 1.0.0-m.5
 
 ## [1.0.0-m.5] - 2017-06-01
 
