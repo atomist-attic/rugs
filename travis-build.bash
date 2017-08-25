@@ -4,7 +4,7 @@
 set -o pipefail
 
 declare Pkg=travis-build-node
-declare Version=0.1.0
+declare Version=0.2.0
 
 function msg() {
     echo "$Pkg: $*"
@@ -29,8 +29,8 @@ function main () {
     fi
 
     msg "running tests"
-    if ! yarn test; then
-        err "yarn test failed"
+    if ! npm test; then
+        err "npm test failed"
         return 1
     fi
 

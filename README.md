@@ -40,8 +40,7 @@ This is a standard TypeScript module.  You will need [Node.js][node],
 which installs `npm`, and [TypeScript][ts] installed.
 
 ```
-$ npm install -g yarn typescript tslint
-$ yarn
+$ npm install
 ```
 
 ### Test
@@ -49,7 +48,7 @@ $ yarn
 Test using the standard approach for Node modules.
 
 ```
-$ yarn test
+$ npm test
 ```
 
 ### Release
