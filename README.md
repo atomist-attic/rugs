@@ -1,4 +1,4 @@
-# Atomist 'rugs'
+# DEPRECATED 'rugs'
 
 [![Build Status](https://travis-ci.org/atomist/rugs.svg?branch=master)](https://travis-ci.org/atomist/rugs)
 
